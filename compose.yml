@@ -22,14 +22,6 @@ services:
     networks:
       - cdp-tenant
 
-  redis:
-    image: redis:7.2.3-alpine3.18
-    ports:
-      - '6379:6379'
-    restart: always
-    networks:
-      - cdp-tenant
-
   mongodb:
     image: mongo:6.0.13
     networks:
@@ -39,31 +31,6 @@ services:
     volumes:
       - mongodb-data:/data
     restart: always
-
-  ################################################################################
-
-  # frontend:
-  #   image: defradigital/frontend:${FRONTEND_VERSION:-latest}
-  #   ports:
-  #     - '3000:3000'
-  #   links:
-  #     - 'localstack:localstack'
-  #     - 'redis:redis'
-  #   depends_on:
-  #     localstack:
-  #       condition: service_healthy
-  #     redis:
-  #       condition: service_started
-  #   env_file:
-  #     - 'compose/aws.env'
-  #   environment:
-  #     PORT: 3000
-  #     NODE_ENV: development
-  #     REDIS_HOST: redis
-  #     LOCALSTACK_ENDPOINT: http://localstack:4566
-  #     USE_SINGLE_INSTANCE_CACHE: true
-  #   networks:
-  #     - cdp-tenant
 
   ahwr-sfd-comms-proxy:
     build:
@@ -80,12 +47,22 @@ services:
       mongodb:
         condition: service_started
     env_file:
-      - 'compose/aws.env'
+      - path: 'compose/aws.env'
+        required: true
+      - path: './.env'
+        required: false
     environment:
       PORT: 3001
       NODE_ENV: development
-      LOCALSTACK_ENDPOINT: http://localstack:4566
+      AWS_ENDPOINT_URL: http://localstack:4566
       MONGO_URI: mongodb://mongodb:27017/
+      USE_PRETTY_PRINT: true
+      MESSAGE_REQUEST_QUEUE_URL: "http://sqs.eu-west-2.127.0.0.1:4566/000000000000/ahwr_sfd_message_queue"
+      SFD_EMAIL_REPLY_TO_ID: "c3e9149b-9490-4321-808c-72e709d9d814"
+      SFD_MESSAGE_REQUEST_TOPIC: "fcp-fd-comms-dev"
+      MESSAGE_QUEUE_HOST: ${MESSAGE_QUEUE_HOST}
+      MESSAGE_QUEUE_PASSWORD: ${MESSAGE_QUEUE_PASSWORD}
+      MESSAGE_QUEUE_USER: ${MESSAGE_QUEUE_USER}
     networks:
       - cdp-tenant
     volumes:
