@@ -19,6 +19,12 @@ describe('redact-pii', () => {
     server = await startServer()
   })
 
+  afterEach(async () => {
+    if (server) {
+      await server.stop()
+    }
+  })
+
   describe('POST /api/redact/pii', () => {
     test('should return OK status when called with agreementsToRedact in payload', async () => {
       const res = await server.inject({

@@ -21,7 +21,7 @@
     "server:watch": "nodemon --inspect=0.0.0.0 --ext js,json --legacy-watch ./src",
     "setup:husky": "node -e \"try { (await import('husky')).default() } catch (e) { if (e.code !== 'ERR_MODULE_NOT_FOUND') throw e }\" --input-type module",
     "start": "NODE_ENV=production node --use-strict .",
-    "test": "PORT=3933 jest --runInBand --force-exit",
+    "test": "PORT=3933 jest --runInBand",
     "test:watch": "PORT=3933 TZ=UTC vitest"
   },
   "author": "Defra DDTS",
