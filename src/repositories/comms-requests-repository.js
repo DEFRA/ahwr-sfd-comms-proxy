@@ -10,7 +10,7 @@ export const createLogEntry = async (db, data) => {
 
 export const updateLogEntry = async (db, id, status) => {
   const result = await db.collection('commsrequests').updateOne(
-    { _id: id },
+    { id },
     {
       $set: {
         status,

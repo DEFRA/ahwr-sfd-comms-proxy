@@ -5,7 +5,7 @@ let fcpMessageClient
 
 const serviceBusConfig = config.get('outboundMessage')
 
-export const startMessagingService = async (logger) => {
+export const startMessagingService = async () => {
   const { host, username, password } = serviceBusConfig.serviceBus
   fcpMessageClient = createServiceBusClient({
     host,

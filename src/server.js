@@ -65,7 +65,7 @@ export async function createServer() {
   ])
 
   server.events.on('start', async () => {
-    await startMessagingService(server.logger)
+    await startMessagingService()
     await configureAndStart(server.db)
   })
 
