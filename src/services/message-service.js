@@ -34,7 +34,7 @@ export const sendMessageToSingleFrontDoor = async (
   await updateMessageLog(db, outboundMessageId, success)
 
   if (!success) {
-    throw Error('Failed to send outbound message to SFD')
+    throw new Error('Failed to send outbound message to SFD')
   }
 
   return outboundMessage
