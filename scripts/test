@@ -1,0 +1,69 @@
+#!/usr/bin/env sh
+
+set -e
+projectRoot="$(a="/$0"; a=${a%/*}; a=${a:-.}; a=${a#/}/; cd "$a/.." || return; pwd)"
+
+service="ffc-ahwr-sfd-messaging-proxy"
+
+show_help() {
+  echo "
+    Usage: scripts/test [OPTION...]
+    Run tests.
+
+    Options:
+      -w, --watch   watch tests
+      -d, --debug   debug tests
+      -f, --fix     fix lint errors before tests
+      -h, --help    display this help text
+    "
+}
+
+# Determine which docker compose command is available
+if command -v docker compose &> /dev/null; then
+  compose_cmd="docker compose"
+elif command -v docker-compose &> /dev/null; then
+  compose_cmd="docker-compose"
+else
+  echo "Neither 'docker compose' nor 'docker-compose' is installed." >&2
+  exit 1
+fi
+
+while :; do
+  case $1 in
+    -w|--watch)
+      watch="true"
+      ;;
+
+    -f|--fix)
+      fix_lint="true" # Fix linting issues rather than just fail and stop tests running
+      ;;
+
+    -h|--help)   # Call a "show_help" function to display a synopsis, then exit.
+      show_help
+      exit
+      ;;
+    *)
+      break
+  esac
+
+  shift
+done
+
+(
+  cd "${projectRoot}"
+
+  if [ "${fix_lint}" = "true" ]; then
+    npm run lint:fix
+  fi
+
+  # Create test output folder
+  mkdir -p test-output
+
+  # Run tests
+  if [ "${watch}" = "true" ]; then
+    npm run test:watch
+  else
+    npm run test
+  fi
+
+)
