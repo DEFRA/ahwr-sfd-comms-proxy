@@ -53,8 +53,9 @@ describe('comms requests repository', () => {
         { agreementReference: { $in: ['AHWR-123', 'IAHW-456'] } },
         {
           $set: {
-            'inboundMessage.emailAddress': 'redacted.email@example.com',
-            'outboundMessage.data.commsAddresses': 'redacted.email@example.com',
+            'data.inboundMessage.emailAddress': 'redacted.email@example.com',
+            'data.outboundMessage.data.commsAddresses':
+              'redacted.email@example.com',
             updatedAt: expect.any(Date)
           }
         }
