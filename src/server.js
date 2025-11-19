@@ -6,12 +6,19 @@ import { config } from './config.js'
 import { router } from './plugins/router.js'
 import { requestLogger } from './common/helpers/logging/request-logger.js'
 import { mongoDb } from './common/helpers/mongodb.js'
-import { failAction } from './common/helpers/fail-action.js'
 import { pulse } from './common/helpers/pulse.js'
 import { requestTracing } from './common/helpers/request-tracing.js'
 import { setupProxy } from './common/helpers/proxy/setup-proxy.js'
+import {
+  configureAndStart,
+  stopSubscriber
+} from './messaging/message-request-queue-subscriber.js'
+import {
+  startMessagingService,
+  stopMessagingService
+} from './messaging/fcp-messaging-service.js'
 
-async function createServer() {
+export async function createServer() {
   setupProxy()
   const server = Hapi.server({
     host: config.get('host'),
@@ -20,8 +27,7 @@ async function createServer() {
       validate: {
         options: {
           abortEarly: false
-        },
-        failAction
+        }
       },
       security: {
         hsts: {
@@ -58,7 +64,15 @@ async function createServer() {
     router
   ])
 
+  server.events.on('start', async () => {
+    await startMessagingService()
+    await configureAndStart(server.db)
+  })
+
+  server.events.on('stop', async () => {
+    await stopSubscriber()
+    await stopMessagingService()
+  })
+
   return server
 }
-
-export { createServer }
