@@ -213,12 +213,10 @@ docker run -e PORT=3001 -p 3001:3001 ahwr-sfd-comms-proxy
 
 A local environment with:
 
-- Localstack for AWS services (S3, SQS)
-- Redis
+- Localstack for AWS services (SQS)
 - MongoDB
 - This service.
-- A commented out frontend example.
-
+  
 ```bash
 docker compose up --build -d
 ```
