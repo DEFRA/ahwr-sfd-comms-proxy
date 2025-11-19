@@ -1,4 +1,8 @@
-import { createLogEntry, updateLogEntry } from './comms-requests-repository.js'
+import {
+  createLogEntry,
+  redactPII,
+  updateLogEntry
+} from './comms-requests-repository.js'
 
 describe('comms requests repository', () => {
   const mockDb = {
@@ -29,51 +33,47 @@ describe('comms requests repository', () => {
   })
 
   describe('redactPII', () => {
-    // const mockLogger = { info: jest.fn() }
+    const mockLogger = { info: jest.fn() }
+    const mockDb = {
+      collection: jest.fn().mockReturnThis(),
+      updateMany: jest.fn()
+    }
 
     beforeEach(async () => {
       jest.clearAllMocks()
     })
 
-    test('should call messageLog.update with correct parameters', async () => {
-      // const agreementReference = 'AHWR-123'
-      // const mockUpdatedRows = [{ id: 1 }, { id: 2 }]
-      // dataModeller.models.messageLog.update.mockResolvedValue([mockUpdatedRows.length, mockUpdatedRows])
-      //
-      // await redactPII(agreementReference, mockLogger)
-      //
-      // expect(dataModeller.models.messageLog.update).toHaveBeenCalledWith(
-      //   expect.objectContaining({ data: expect.any(Object) }),
-      //   expect.objectContaining({
-      //     where: {
-      //       agreementReference: 'AHWR-123',
-      //       [Op.and]: { val: "data->'outboundMessage'->'data'->'commsAddresses' IS NOT NULL" }
-      //     }
-      //   })
-      // )
-      // expect(dataModeller.models.messageLog.update).toHaveBeenCalledWith(
-      //   expect.objectContaining({ data: expect.any(Object) }),
-      //   expect.objectContaining({
-      //     where: {
-      //       agreementReference: 'AHWR-123',
-      //       [Op.and]: { val: "data->'inboundMessage'->'emailAddress' IS NOT NULL" }
-      //     }
-      //   })
-      // )
-      // expect(mockLogger.info).toHaveBeenCalledWith("Redacted field at path 'inboundMessage,emailAddress' in 2 message(s) for agreementReference: AHWR-123")
-      // expect(mockLogger.info).toHaveBeenCalledWith("Redacted field at path 'outboundMessage,data,commsAddresses' in 2 message(s) for agreementReference: AHWR-123")
-      // expect(mockLogger.info).toHaveBeenCalledWith('Total redacted fields across messages: 4 for agreementReference: AHWR-123')
+    test('should call update with correct parameters', async () => {
+      const agreementReferences = ['AHWR-123', 'IAHW-456']
+      mockDb.updateMany.mockResolvedValueOnce({ modifiedCount: 2 })
+
+      await redactPII(mockDb, agreementReferences, mockLogger)
+
+      expect(mockDb.updateMany).toHaveBeenCalledWith(
+        { agreementReference: { $in: ['AHWR-123', 'IAHW-456'] } },
+        {
+          $set: {
+            'inboundMessage.emailAddress': 'redacted.email@example.com',
+            'outboundMessage.data.commsAddresses': 'redacted.email@example.com',
+            updatedAt: expect.any(Date)
+          }
+        }
+      )
+
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        'Total redacted fields across comms log entries: 2 for agreementReferences: AHWR-123,IAHW-456'
+      )
     })
 
     test('should log when no messages are updated', async () => {
-      // const agreementReference = 'AHWR-123'
-      // dataModeller.models.messageLog.update.mockResolvedValue([0, []])
-      //
-      // await redactPII(agreementReference, mockLogger)
-      //
-      // expect(mockLogger.info).toHaveBeenCalledWith(
-      //   `No messages updated for agreementReference: ${agreementReference}`
-      // )
+      const agreementReferences = ['AHWR-123', 'IAHW-456']
+      mockDb.updateMany.mockResolvedValueOnce({ modifiedCount: 0 })
+
+      await redactPII(mockDb, agreementReferences, mockLogger)
+
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        `No comms log entries updated for agreementReference: ${agreementReferences}`
+      )
     })
   })
 })

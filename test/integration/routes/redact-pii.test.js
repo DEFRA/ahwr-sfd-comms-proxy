@@ -33,9 +33,12 @@ describe('redact-pii', () => {
         payload: { agreementsToRedact: mockAgreementsToRedact }
       })
 
-      expect(redactPII).toHaveBeenCalledTimes(2)
-      expect(redactPII).toHaveBeenCalledWith('FAKE-REF-1', expect.any(Object))
-      expect(redactPII).toHaveBeenCalledWith('FAKE-REF-2', expect.any(Object))
+      expect(redactPII).toHaveBeenCalledTimes(1)
+      expect(redactPII).toHaveBeenCalledWith(
+        expect.anything(),
+        ['FAKE-REF-1', 'FAKE-REF-2'],
+        expect.any(Object)
+      )
       expect(res.statusCode).toBe(HttpStatus.OK)
     })
   })
