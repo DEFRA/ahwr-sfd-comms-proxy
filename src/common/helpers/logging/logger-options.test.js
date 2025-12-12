@@ -15,4 +15,21 @@ describe('logger-options', () => {
     const result = loggerOptions.mixin()
     expect(result).toEqual({})
   })
+
+  it('formats error object in serializer', () => {
+    getTraceId.mockReturnValueOnce(null)
+    const result = loggerOptions.serializers.error(new Error('test'))
+    expect(result).toEqual({
+      message: 'test',
+      stack_trace: expect.any(String),
+      type: 'Error'
+    })
+  })
+
+  it('passes through other objects in serializer', () => {
+    getTraceId.mockReturnValueOnce(null)
+    const untouchedObject = { message: 'test' }
+    const result = loggerOptions.serializers.error(untouchedObject)
+    expect(result).toEqual(untouchedObject)
+  })
 })
