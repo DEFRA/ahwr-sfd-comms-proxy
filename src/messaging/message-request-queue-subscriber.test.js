@@ -5,8 +5,10 @@ import {
 import { SqsSubscriber } from 'ffc-ahwr-common-library'
 import { getLogger } from '../common/helpers/logging/logger.js'
 import { config } from '../config.js'
+import { processMessageRequest } from './process-message-request.js'
 
 jest.mock('../common/helpers/logging/logger.js')
+jest.mock('./process-message-request.js')
 jest.mock('ffc-ahwr-common-library')
 
 describe('MessageRequestQueueSubscriber', () => {
@@ -36,6 +38,19 @@ describe('MessageRequestQueueSubscriber', () => {
         onMessage: expect.any(Function)
       })
       expect(SqsSubscriber.mock.instances[0].start).toHaveBeenCalledTimes(1)
+    })
+
+    it('should pass message on via OnMessage function', async () => {
+      const mockLogger = { info: jest.fn() }
+      getLogger.mockReturnValue(mockLogger)
+      processMessageRequest.mockResolvedValueOnce()
+      const mockDb = {}
+
+      const onMessage = await configureAndStart(mockDb)
+
+      await onMessage({ Message: 'test' }, { Attribute: 'value' })
+
+      expect(processMessageRequest).toHaveBeenCalledTimes(1)
     })
   })
   describe('stopSubscriber', () => {

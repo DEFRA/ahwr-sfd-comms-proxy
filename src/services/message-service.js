@@ -11,9 +11,10 @@ import { outboundMessageSchema } from '../messaging/schemas/schemas.js'
 export const sendMessageToSingleFrontDoor = async (
   logger,
   inboundMessage,
+  messageId,
   db
 ) => {
-  const inboundMessageQueueId = uuidv4()
+  const inboundMessageQueueId = messageId
   const outboundMessageId = uuidv4()
   logger.setBindings({ outboundMessageId })
   const outboundMessage = buildOutboundMessage(
