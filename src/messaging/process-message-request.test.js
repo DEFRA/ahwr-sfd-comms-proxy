@@ -32,11 +32,12 @@ describe('processMessageRequest', () => {
       customParams: {},
       dateTime: new Date()
     }
-    await processMessageRequest(mockedLogger, event, mockDb)
+    await processMessageRequest(mockedLogger, event, 'message-id', mockDb)
 
     expect(sendMessageToSingleFrontDoor).toHaveBeenCalledWith(
       mockedLogger,
       event,
+      'message-id',
       mockDb
     )
   })
@@ -53,11 +54,12 @@ describe('processMessageRequest', () => {
       customParams: {},
       dateTime: new Date()
     }
-    await processMessageRequest(mockedLogger, event, mockDb)
+    await processMessageRequest(mockedLogger, event, 'message-id', mockDb)
 
     expect(sendMessageToSingleFrontDoor).toHaveBeenCalledWith(
       mockedLogger,
       event,
+      'message-id',
       mockDb
     )
     expect(mockErrorLogger).toHaveBeenCalledTimes(0)

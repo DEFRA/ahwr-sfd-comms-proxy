@@ -13,7 +13,12 @@ export async function configureAndStart(db) {
     awsEndpointUrl: config.get('aws.endpointUrl'),
     async onMessage(message, attributes) {
       getLogger().info(attributes, 'Received incoming message')
-      await processMessageRequest(getLogger(), message, db)
+      await processMessageRequest(
+        getLogger(),
+        message,
+        attributes.messageId,
+        db
+      )
     }
   })
   await messageRequestSubscriber.start()

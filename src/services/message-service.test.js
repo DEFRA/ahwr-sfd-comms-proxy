@@ -108,7 +108,12 @@ describe('sendMessageToSingleFrontDoor', () => {
     createLogEntry.mockImplementation(jest.fn())
 
     await expect(
-      sendMessageToSingleFrontDoor(mockedLogger, validInboundMessage, mockDb)
+      sendMessageToSingleFrontDoor(
+        mockedLogger,
+        validInboundMessage,
+        'message-id',
+        mockDb
+      )
     ).rejects.toThrow('Failed to send outbound message to SFD')
 
     expect(createLogEntry).toHaveBeenCalledWith(mockDb, {
@@ -167,6 +172,7 @@ describe('sendMessageToSingleFrontDoor', () => {
         ...validInboundMessage,
         claimReference: undefined
       },
+      'message-id',
       mockDb
     )
 
