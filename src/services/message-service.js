@@ -18,6 +18,7 @@ export const sendMessageToSingleFrontDoor = async (
   const outboundMessageId = uuidv4()
   logger.setBindings({ outboundMessageId })
   const outboundMessage = buildOutboundMessage(
+    logger,
     outboundMessageId,
     inboundMessage
   )
@@ -41,7 +42,7 @@ export const sendMessageToSingleFrontDoor = async (
   return outboundMessage
 }
 
-export const buildOutboundMessage = (messageId, inboundMessage) => {
+export const buildOutboundMessage = (logger, messageId, inboundMessage) => {
   const service = SOURCE_SYSTEM
   const defaultSfdEmailReplyToId = config.get('sfdEmailReplyToId')
 
@@ -69,6 +70,19 @@ export const buildOutboundMessage = (messageId, inboundMessage) => {
     abortEarly: false
   })
   if (error) {
+    logger.error(
+      {
+        error,
+        event: {
+          type: 'exception',
+          severity: 'error',
+          category: 'fail-validation',
+          kind: 'outbound-message-validation',
+          reason: JSON.stringify(error.details)
+        }
+      },
+      'Message request validation error'
+    )
     throw new Error(`The outbound message is invalid. ${error.message}`)
   }
 
@@ -80,7 +94,18 @@ const sendMessageToSfd = async (logger, outboundMessage) => {
     await sendSfdMessageRequest(outboundMessage)
     return { success: true }
   } catch (error) {
-    logger.error({ err: error }, 'Problem sending message to SFD')
+    logger.error(
+      {
+        error,
+        event: {
+          type: 'exception',
+          severity: 'error',
+          category: 'fail-send',
+          kind: 'outbound-message-send'
+        }
+      },
+      'Problem sending message to SFD'
+    )
     return { success: false }
   }
 }
