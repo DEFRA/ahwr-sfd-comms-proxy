@@ -4,8 +4,10 @@ import {
   startMessagingService,
   stopMessagingService
 } from './fcp-messaging-service.js'
+import { metricsCounter } from '../common/helpers/metrics.js'
 
 jest.mock('ffc-ahwr-common-library')
+jest.mock('../common/helpers/metrics.js')
 
 describe('fcp-messaging-service', () => {
   describe('start and stop service', () => {
@@ -51,6 +53,9 @@ describe('fcp-messaging-service', () => {
           options: {}
         },
         'fcp-fd-comms-dev'
+      )
+      expect(metricsCounter).toHaveBeenCalledWith(
+        'send-fcp-sfd-message-request'
       )
     })
   })

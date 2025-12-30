@@ -25,7 +25,17 @@ export const validateInboundMessageRequest = (logger, event) => {
   const { error } = inboundMessageSchema.validate(event, { abortEarly: false })
   if (error) {
     logger.error(
-      `Message request validation error ${JSON.stringify(error.details)}`
+      {
+        error,
+        event: {
+          type: 'exception',
+          severity: 'error',
+          category: 'fail-validation',
+          kind: 'inbound-message-validation',
+          reason: JSON.stringify(error.details)
+        }
+      },
+      'Message request validation error'
     )
     return false
   }

@@ -37,7 +37,18 @@ describe('schemas', () => {
 
       expect(result).toBe(false)
       expect(mockLogger.error).toHaveBeenCalledWith(
-        'Message request validation error [{"message":"\\"agreementReference\\" is required","path":["agreementReference"],"type":"any.required","context":{"label":"agreementReference","key":"agreementReference"}}]'
+        {
+          error: expect.any(Object),
+          event: {
+            type: 'exception',
+            severity: 'error',
+            category: 'fail-validation',
+            kind: 'inbound-message-validation',
+            reason:
+              '[{"message":"\\"agreementReference\\" is required","path":["agreementReference"],"type":"any.required","context":{"label":"agreementReference","key":"agreementReference"}}]'
+          }
+        },
+        'Message request validation error'
       )
     })
   })

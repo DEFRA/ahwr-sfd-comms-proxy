@@ -1,9 +1,11 @@
 import { processMessageRequest } from './process-message-request.js'
 import { sendMessageToSingleFrontDoor } from '../services/message-service.js'
+import { metricsCounter } from '../common/helpers/metrics.js'
 
 jest.mock('../services/message-service.js', () => ({
   sendMessageToSingleFrontDoor: jest.fn()
 }))
+jest.mock('../common/helpers/metrics.js')
 
 const mockErrorLogger = jest.fn()
 
@@ -40,6 +42,10 @@ describe('processMessageRequest', () => {
       'message-id',
       mockDb
     )
+    expect(metricsCounter).toHaveBeenCalledWith(
+      'receive-inbound-message-request'
+    )
+    expect(metricsCounter).toHaveBeenCalledWith('inbound-message-request-valid')
   })
 
   test('processes the message if it is valid with optional reply to ID', async () => {
@@ -63,6 +69,10 @@ describe('processMessageRequest', () => {
       mockDb
     )
     expect(mockErrorLogger).toHaveBeenCalledTimes(0)
+    expect(metricsCounter).toHaveBeenCalledWith(
+      'receive-inbound-message-request'
+    )
+    expect(metricsCounter).toHaveBeenCalledWith('inbound-message-request-valid')
   })
 
   test('throw error if incoming message is invalid and do not send it to SFD', async () => {
@@ -83,6 +93,12 @@ describe('processMessageRequest', () => {
 
     expect(mockErrorLogger).toHaveBeenCalled()
     expect(sendMessageToSingleFrontDoor).toHaveBeenCalledTimes(0)
+    expect(metricsCounter).toHaveBeenCalledWith(
+      'receive-inbound-message-request'
+    )
+    expect(metricsCounter).not.toHaveBeenCalledWith(
+      'inbound-message-request-valid'
+    )
   })
 
   test('throws if incoming message valid but an error is thrown in sending it to SFD', async () => {
@@ -107,5 +123,9 @@ describe('processMessageRequest', () => {
 
     expect(mockErrorLogger).not.toHaveBeenCalled()
     expect(sendMessageToSingleFrontDoor).toHaveBeenCalledTimes(1)
+    expect(metricsCounter).toHaveBeenCalledWith(
+      'receive-inbound-message-request'
+    )
+    expect(metricsCounter).toHaveBeenCalledWith('inbound-message-request-valid')
   })
 })

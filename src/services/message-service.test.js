@@ -102,8 +102,9 @@ describe('sendMessageToSingleFrontDoor', () => {
   })
 
   test('stores that the message was not sent, if the SFD request fails', async () => {
+    const mockError = new Error('Faked message send error')
     sendSfdMessageRequest.mockImplementation(() => {
-      throw new Error('Faked message send error')
+      throw mockError
     })
     createLogEntry.mockImplementation(jest.fn())
 
@@ -160,6 +161,19 @@ describe('sendMessageToSingleFrontDoor', () => {
       mockDb,
       expect.any(String),
       'UNSENT'
+    )
+
+    expect(mockedLogger.error).toHaveBeenCalledWith(
+      {
+        error: mockError,
+        event: {
+          type: 'exception',
+          severity: 'error',
+          category: 'fail-send',
+          kind: 'outbound-message-send'
+        }
+      },
+      'Problem sending message to SFD'
     )
   })
 
@@ -234,8 +248,21 @@ describe('buildOutboundMessage', () => {
     }
 
     expect(() => {
-      buildOutboundMessage(uuidv4(), invalidInboundMessage)
+      buildOutboundMessage(mockedLogger, uuidv4(), invalidInboundMessage)
     }).toThrow('The outbound message is invalid.')
+    expect(mockedLogger.error).toHaveBeenCalledWith(
+      {
+        error: expect.any(Object),
+        event: {
+          type: 'exception',
+          severity: 'error',
+          category: 'fail-validation',
+          kind: 'outbound-message-validation',
+          reason: expect.any(String)
+        }
+      },
+      'Message request validation error'
+    )
   })
 
   test('throws error when outbound message invalid due to no replyToId', () => {
@@ -252,8 +279,22 @@ describe('buildOutboundMessage', () => {
     }
 
     expect(() => {
-      buildOutboundMessage(uuidv4(), validInboundMessage)
+      buildOutboundMessage(mockedLogger, uuidv4(), validInboundMessage)
     }).toThrow('The outbound message is invalid.')
+    expect(mockedLogger.error).toHaveBeenCalledWith(
+      {
+        error: expect.any(Object),
+        event: {
+          type: 'exception',
+          severity: 'error',
+          category: 'fail-validation',
+          kind: 'outbound-message-validation',
+          reason:
+            '[{"message":"\\"data.emailReplyToId\\" is required","path":["data","emailReplyToId"],"type":"any.required","context":{"label":"data.emailReplyToId","key":"emailReplyToId"}}]'
+        }
+      },
+      'Message request validation error'
+    )
   })
 
   test('verify input and output for: Farmer Claim - Complete', async () => {
@@ -290,9 +331,9 @@ describe('buildOutboundMessage', () => {
       }
     }
 
-    expect(buildOutboundMessage(messageId, inputClaimOldWorld)).toStrictEqual(
-      expectedOutput
-    )
+    expect(
+      buildOutboundMessage(mockedLogger, messageId, inputClaimOldWorld)
+    ).toStrictEqual(expectedOutput)
   })
 
   test('verify input and output for: Farmer Claim - Endemics Follow-up', async () => {
@@ -336,7 +377,7 @@ describe('buildOutboundMessage', () => {
     }
 
     expect(
-      buildOutboundMessage(messageId, inputClaimEndemicFollowup)
+      buildOutboundMessage(mockedLogger, messageId, inputClaimEndemicFollowup)
     ).toStrictEqual(expectedOutput)
   })
 
@@ -381,7 +422,7 @@ describe('buildOutboundMessage', () => {
     }
 
     expect(
-      buildOutboundMessage(messageId, inputClaimEndemicFollowup)
+      buildOutboundMessage(mockedLogger, messageId, inputClaimEndemicFollowup)
     ).toStrictEqual(expectedOutput)
   })
 
@@ -405,7 +446,7 @@ describe('buildOutboundMessage', () => {
 
     const {
       data: { emailReplyToId }
-    } = buildOutboundMessage(messageId, inputClaimEndemicFollowup)
+    } = buildOutboundMessage(mockedLogger, messageId, inputClaimEndemicFollowup)
 
     expect(emailReplyToId).toStrictEqual('123456fc-9999-40c1-a11d-85f55aff4999')
   })

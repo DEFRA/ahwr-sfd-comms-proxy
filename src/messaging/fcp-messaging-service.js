@@ -1,5 +1,6 @@
 import { createServiceBusClient } from 'ffc-ahwr-common-library'
 import { config } from '../config.js'
+import { metricsCounter } from '../common/helpers/metrics.js'
 
 let fcpMessageClient
 
@@ -26,6 +27,7 @@ export const sendSfdMessageRequest = async (sfdMessageRequest) => {
   const message = createMessage(sfdMessageRequest, messageType)
 
   fcpMessageClient.sendMessage(message, sfdMessageTopic)
+  await metricsCounter('send-fcp-sfd-message-request')
 }
 
 const createMessage = (body, type) => {
