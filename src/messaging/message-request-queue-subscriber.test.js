@@ -23,7 +23,11 @@ describe('MessageRequestQueueSubscriber', () => {
   })
   describe('configureAndStart', () => {
     it('should configure and start the SQS subscriber', async () => {
-      const mockLogger = jest.fn()
+      const mockLogger = {
+        child: jest.fn().mockReturnValue({
+          info: jest.fn()
+        })
+      }
       getLogger.mockReturnValueOnce(mockLogger)
       const mockDb = {}
 
@@ -32,7 +36,7 @@ describe('MessageRequestQueueSubscriber', () => {
       expect(SqsSubscriber).toHaveBeenCalledTimes(1)
       expect(SqsSubscriber).toHaveBeenCalledWith({
         awsEndpointUrl: 'http://localhost:4576',
-        logger: mockLogger,
+        logger: mockLogger.child(),
         region: 'eu-west-2',
         queueUrl: 'http://localhost:4576/queue/comms-request-queue',
         onMessage: expect.any(Function)
@@ -41,7 +45,11 @@ describe('MessageRequestQueueSubscriber', () => {
     })
 
     it('should pass message on via OnMessage function', async () => {
-      const mockLogger = { info: jest.fn() }
+      const mockLogger = {
+        child: jest.fn().mockReturnValue({
+          info: jest.fn()
+        })
+      }
       getLogger.mockReturnValue(mockLogger)
       processMessageRequest.mockResolvedValueOnce()
       const mockDb = {}
@@ -55,7 +63,11 @@ describe('MessageRequestQueueSubscriber', () => {
   })
   describe('stopSubscriber', () => {
     it('should stop the SQS subscriber', async () => {
-      const mockLogger = jest.fn()
+      const mockLogger = {
+        child: jest.fn().mockReturnValue({
+          info: jest.fn()
+        })
+      }
       getLogger.mockReturnValueOnce(mockLogger)
       const mockDb = {}
 

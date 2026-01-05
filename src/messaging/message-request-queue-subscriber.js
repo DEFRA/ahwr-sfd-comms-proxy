@@ -7,12 +7,13 @@ let messageRequestSubscriber
 
 export async function configureAndStart(db) {
   const onMessage = async (message, attributes) => {
-    getLogger().info(attributes, 'Received incoming message')
-    await processMessageRequest(getLogger(), message, attributes.messageId, db)
+    const logger = getLogger().child({})
+    logger.info(attributes, 'Received incoming message')
+    await processMessageRequest(logger, message, attributes.messageId, db)
   }
   messageRequestSubscriber = new SqsSubscriber({
     queueUrl: config.get('sqs.commsRequestQueueUrl'),
-    logger: getLogger(),
+    logger: getLogger().child({}),
     region: config.get('aws.region'),
     awsEndpointUrl: config.get('aws.endpointUrl'),
     onMessage
