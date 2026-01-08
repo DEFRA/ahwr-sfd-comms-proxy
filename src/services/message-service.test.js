@@ -168,7 +168,6 @@ describe('sendMessageToSingleFrontDoor', () => {
         error: mockError,
         event: {
           type: 'exception',
-          severity: 'error',
           category: 'fail-send',
           kind: 'outbound-message-send'
         }
@@ -255,7 +254,6 @@ describe('buildOutboundMessage', () => {
         error: expect.any(Object),
         event: {
           type: 'exception',
-          severity: 'error',
           category: 'fail-validation',
           kind: 'outbound-message-validation',
           reason: expect.any(String)
@@ -286,7 +284,6 @@ describe('buildOutboundMessage', () => {
         error: expect.any(Object),
         event: {
           type: 'exception',
-          severity: 'error',
           category: 'fail-validation',
           kind: 'outbound-message-validation',
           reason:
