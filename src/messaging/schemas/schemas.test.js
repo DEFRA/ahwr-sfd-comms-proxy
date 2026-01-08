@@ -41,7 +41,6 @@ describe('schemas', () => {
           error: expect.any(Object),
           event: {
             type: 'exception',
-            severity: 'error',
             category: 'fail-validation',
             kind: 'inbound-message-validation',
             reason:

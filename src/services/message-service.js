@@ -75,7 +75,6 @@ export const buildOutboundMessage = (logger, messageId, inboundMessage) => {
         error,
         event: {
           type: 'exception',
-          severity: 'error',
           category: 'fail-validation',
           kind: 'outbound-message-validation',
           reason: JSON.stringify(error.details)
@@ -99,7 +98,6 @@ const sendMessageToSfd = async (logger, outboundMessage) => {
         error,
         event: {
           type: 'exception',
-          severity: 'error',
           category: 'fail-send',
           kind: 'outbound-message-send'
         }
