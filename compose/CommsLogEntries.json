@@ -1,0 +1,163 @@
+[
+  {
+    "agreementReference": "IAHW-ABC1-1060",
+    "claimReference": "FUBC-JTTU-SDQ7",
+    "createdAt": {
+      "$date": "2024-11-11T14:42:06.330Z"
+    },
+    "updatedAt": {
+      "$date": "2024-11-11T14:45:16.121Z"
+    },
+    "legacyData": {
+      "legacyId": "4004780a-2908-4012-abc6-29a73e14c6f5"
+    },
+    "templateId": "2f9b1e0e-b678-481c-839e-892ebf42fddf",
+    "status": "UNKNOWN",
+    "data": {
+      "inboundMessage": {
+        "crn": 1060000000,
+        "sbi": 987654321,
+        "dateTime": "2024-11-11T12:01:01.001Z",
+        "customParams": {
+          "reference": "IAHW-ABC1-1001"
+        },
+        "emailAddress": "Ben.Hope@defra.gov.uk",
+        "notifyTemplateId": "2f9b1e0e-b678-481c-839e-892ebf42fddf",
+        "agreementReference": "IAHW-ABC1-1060"
+      },
+      "outboundMessage": {
+        "id": "4004780a-2908-4012-abc6-29a73e14c6f5",
+        "data": {
+          "crn": 1060000000,
+          "sbi": 987654321,
+          "commsType": "email",
+          "reference": "ffc-ahwr-4004780a-2908-4012-abc6-29a73e14c6f5",
+          "sourceSystem": "ffc-ahwr",
+          "commsAddresses": "Ben.Hope@defra.gov.uk",
+          "personalisation": {
+            "reference": "IAHW-ABC1-1001"
+          },
+          "notifyTemplateId": "2f9b1e0e-b678-481c-839e-892ebf42fddf"
+        },
+        "time": "2024-11-11T12:01:01.001Z",
+        "type": "uk.gov.ffc.ahwr.comms.request",
+        "source": "ffc-ahwr",
+        "specversion": "1.0.2",
+        "datacontenttype": "application/json"
+      },
+      "inboundMessageQueueId": "5e376a8c1a9549b6bc81604e93f145ba"
+    }
+  },
+  {
+    "agreementReference": "IAHW-ABC1-1002",
+    "claimReference": "FUDC-JTTU-SDQ7",
+    "createdAt": {
+      "$date": "2024-11-11T14:42:06.330Z"
+    },
+    "updatedAt": {
+      "$date": "2024-11-12T10:44:33.208Z"
+    },
+    "legacyData": {
+      "legacyId": "aea8c91a-b5a4-4cbd-b26f-e442d3477f95"
+    },
+    "templateId": "2f9b1e0e-b678-481c-839e-892ebf42fddf",
+    "status": "UNKNOWN",
+    "data": {
+      "inboundMessage": {
+        "crn": 1100568360,
+        "sbi": 113744827,
+        "dateTime": "2024-11-12T10:01:01.001Z",
+        "customParams": {
+          "reference": "IAHW-ABC1-1002"
+        },
+        "emailAddress": "test.test@defra.gov.uk",
+        "notifyTemplateId": "2f9b1e0e-b678-481c-839e-892ebf42fddf",
+        "agreementReference": "IAHW-ABC1-1002"
+      },
+      "outboundMessage": {
+        "id": "aea8c91a-b5a4-4cbd-b26f-e442d3477f95",
+        "data": {
+          "crn": 1100568360,
+          "sbi": 113744827,
+          "commsType": "email",
+          "reference": "ffc-ahwr-aea8c91a-b5a4-4cbd-b26f-e442d3477f95",
+          "sourceSystem": "ffc-ahwr",
+          "commsAddresses": "test.test@defra.gov.uk",
+          "personalisation": {
+            "reference": "IAHW-ABC1-1002"
+          },
+          "notifyTemplateId": "2f9b1e0e-b678-481c-839e-892ebf42fddf"
+        },
+        "time": "2024-11-12T10:01:01.001Z",
+        "type": "uk.gov.ffc.ahwr.comms.request",
+        "source": "ffc-ahwr",
+        "specversion": "1.0.2",
+        "datacontenttype": "application/json"
+      },
+      "inboundMessageQueueId": "f3db4a312bdd47a38daad6f3bd5b21a0"
+    }
+  },
+  {
+    "agreementReference": "IAHW-B7FC-0CEF",
+    "claimReference": "FUSH-JTTU-SDQ7",
+    "createdAt": {
+      "$date": "2024-11-18T09:42:36.648Z"
+    },
+    "updatedAt": {
+      "$date": "2024-11-18T11:20:25.648Z"
+    },
+    "legacyData": {
+      "legacyId": "74116860-7484-4e50-be67-0eb54a2974fc"
+    },
+    "templateId": "7d720ff7-4d1b-438c-b79d-6a34a985538f",
+    "status": "UNKNOWN",
+    "data": {
+      "inboundMessage": {
+        "sbi": "106413106",
+        "dateTime": "2024-11-18T11:20:24.777Z",
+        "customParams": {
+          "name": "Mrs Elaine Thomason",
+          "claim_uri": "https://ffc-ahwr-farmer-test.azure.defra.cloud/claim",
+          "reference": "IAHW-B7FC-0CEF",
+          "guidance_uri": "https://ffc-ahwr-farmer-test.azure.defra.cloud/apply/guidance-for-farmers",
+          "link_to_file": {
+            "file": "Base64NotMigrated",
+            "is_csv": false
+          },
+          "claim_guidance_uri": "https://ffc-ahwr-farmer-test.azure.defra.cloud/apply/claim-guidance-for-farmers"
+        },
+        "emailAddress": "satish.chatap@capgemini.com",
+        "notifyTemplateId": "7d720ff7-4d1b-438c-b79d-6a34a985538f",
+        "agreementReference": "IAHW-B7FC-0CEF"
+      },
+      "outboundMessage": {
+        "id": "74116860-7484-4e50-be67-0eb54a2974fc",
+        "data": {
+          "sbi": "106413106",
+          "commsType": "email",
+          "reference": "ffc-ahwr-74116860-7484-4e50-be67-0eb54a2974fc",
+          "sourceSystem": "ffc-ahwr",
+          "commsAddresses": "satish.chatap@capgemini.com",
+          "personalisation": {
+            "name": "Mrs Elaine Thomason",
+            "claim_uri": "https://ffc-ahwr-farmer-test.azure.defra.cloud/claim",
+            "reference": "IAHW-B7FC-0CEF",
+            "guidance_uri": "https://ffc-ahwr-farmer-test.azure.defra.cloud/apply/guidance-for-farmers",
+            "link_to_file": {
+              "file": "Base64NotMigrated",
+              "is_csv": false
+            },
+            "claim_guidance_uri": "https://ffc-ahwr-farmer-test.azure.defra.cloud/apply/claim-guidance-for-farmers"
+          },
+          "notifyTemplateId": "7d720ff7-4d1b-438c-b79d-6a34a985538f"
+        },
+        "time": "2024-11-18T11:20:24.777Z",
+        "type": "uk.gov.ffc.ahwr.comms.request",
+        "source": "ffc-ahwr",
+        "specversion": "1.0.2",
+        "datacontenttype": "application/json"
+      },
+      "inboundMessageQueueId": "c021be6e866949d9a9250c6ba3ea9a6c"
+    }
+  }
+]
