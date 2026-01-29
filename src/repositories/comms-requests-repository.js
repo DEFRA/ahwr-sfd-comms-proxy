@@ -5,18 +5,34 @@ const COLLECTION = 'commsrequests'
 export const getLogEntryByAgreementRef = async (db, agreementReference) => {
   return db
     .collection(COLLECTION)
-    .find({
-      agreementReference
-    })
+    .find(
+      {
+        agreementReference
+      },
+      {
+        projection: {
+          'data.inboundMessage.customParams.link_to_file.file': 0,
+          'data.outboundMessage.data.personalisation.link_to_file.file': 0
+        }
+      }
+    )
     .toArray()
 }
 
 export const getLogEntryByClaimRef = async (db, claimReference) => {
   return db
     .collection(COLLECTION)
-    .find({
-      claimReference
-    })
+    .find(
+      {
+        claimReference
+      },
+      {
+        projection: {
+          'data.inboundMessage.customParams.link_to_file.file': 0,
+          'data.outboundMessage.data.personalisation.link_to_file.file': 0
+        }
+      }
+    )
     .toArray()
 }
 

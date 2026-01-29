@@ -73,9 +73,17 @@ describe('comms requests repository', () => {
 
       const result = await getLogEntryByClaimRef(mockDb, 'TEMP-O9UD-22F6')
 
-      expect(mockDb.find).toHaveBeenCalledWith({
-        claimReference: 'TEMP-O9UD-22F6'
-      })
+      expect(mockDb.find).toHaveBeenCalledWith(
+        {
+          claimReference: 'TEMP-O9UD-22F6'
+        },
+        {
+          projection: {
+            'data.inboundMessage.customParams.link_to_file.file': 0,
+            'data.outboundMessage.data.personalisation.link_to_file.file': 0
+          }
+        }
+      )
       expect(result).toEqual([logEntry])
     })
 
@@ -94,9 +102,17 @@ describe('comms requests repository', () => {
 
       const result = await getLogEntryByAgreementRef(mockDb, 'TEMP-O9UD-22F6')
 
-      expect(mockDb.find).toHaveBeenCalledWith({
-        agreementReference: 'TEMP-O9UD-22F6'
-      })
+      expect(mockDb.find).toHaveBeenCalledWith(
+        {
+          agreementReference: 'TEMP-O9UD-22F6'
+        },
+        {
+          projection: {
+            'data.inboundMessage.customParams.link_to_file.file': 0,
+            'data.outboundMessage.data.personalisation.link_to_file.file': 0
+          }
+        }
+      )
       expect(result).toEqual([logEntry])
     })
 
