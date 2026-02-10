@@ -1,5 +1,6 @@
 import { MongoClient } from 'mongodb'
 import { LockManager } from 'mongo-locks'
+import { createSfdProxyIndexes } from '../../repositories/comms-requests-repository.js'
 
 export const mongoDb = {
   plugin: {
@@ -40,4 +41,5 @@ export const mongoDb = {
 
 async function createIndexes(db) {
   await db.collection('mongo-locks').createIndex({ id: 1 })
+  await createSfdProxyIndexes(db)
 }

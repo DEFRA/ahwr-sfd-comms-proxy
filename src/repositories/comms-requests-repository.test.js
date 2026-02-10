@@ -3,7 +3,8 @@ import {
   redactPII,
   updateLogEntry,
   getLogEntryByAgreementRef,
-  getLogEntryByClaimRef
+  getLogEntryByClaimRef,
+  createSfdProxyIndexes
 } from './comms-requests-repository.js'
 
 describe('comms requests repository', () => {
@@ -190,6 +191,27 @@ describe('comms requests repository', () => {
       expect(mockLogger.info).toHaveBeenCalledWith(
         `No comms log entries updated for agreementReference: ${agreementReferences}`
       )
+    })
+  })
+
+  describe('createSfdProxyIndexes', () => {
+    const mockCollection = {
+      createIndex: jest.fn()
+    }
+    const mockDb = {
+      collection: jest.fn(() => mockCollection)
+    }
+
+    it('should create indexes', async () => {
+      await createSfdProxyIndexes(mockDb)
+
+      expect(mockDb.collection).toHaveBeenCalledWith('commsrequests')
+      expect(mockCollection.createIndex).toHaveBeenCalledWith({
+        agreementReference: 1
+      })
+      expect(mockCollection.createIndex).toHaveBeenCalledWith({
+        claimReference: 1
+      })
     })
   })
 })
