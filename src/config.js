@@ -35,6 +35,22 @@ const config = convict({
     format: String,
     default: 'ahwr-sfd-comms-proxy'
   },
+  apiKeys: {
+    backofficeUi: {
+      doc: 'API key to allow backoffice API access',
+      format: String,
+      default: 'bui-not-set',
+      sensitive: true,
+      env: 'BACKOFFICE_UI_API_KEY'
+    },
+    applicationBackEnd: {
+      doc: 'API key to allow application backend API access',
+      format: String,
+      default: 'abe-not-set',
+      sensitive: true,
+      env: 'APPLICATION_BACKEND_API_KEY'
+    }
+  },
   cdpEnvironment: {
     doc: 'The CDP environment the app is running in. With the addition of "local" for local development',
     format: [
