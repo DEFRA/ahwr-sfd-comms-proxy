@@ -17,6 +17,7 @@ import {
   startMessagingService,
   stopMessagingService
 } from './messaging/fcp-messaging-service.js'
+import { authPlugin } from './plugins/auth.js'
 
 export async function createServer() {
   setupProxy()
@@ -61,6 +62,7 @@ export async function createServer() {
       plugin: mongoDb,
       options: config.get('mongo')
     },
+    authPlugin,
     router
   ])
 
