@@ -1,6 +1,6 @@
 # ahwr-sfd-comms-proxy
 
-Core delivery platform Node.js Backend Template.
+Created from the Core delivery platform Node.js Backend Template.
 
 - [Requirements](#requirements)
   - [Node.js](#nodejs)
@@ -26,6 +26,15 @@ Core delivery platform Node.js Backend Template.
 - [Licence](#licence)
   - [About the licence](#about-the-licence)
 
+# Service Purpose
+This service is responsible for proxying requests to the SFD Comms component, which is used to send emails via gov.notify.
+It is invoked by input messages on it's input SQS queue, and outputs requests to the FCP SFD Comms component via an output Servicebus queue.
+
+## Service features
+- Listens to an SQS queue for messages containing email request details
+- Saves an audit to the database of the request
+- Forwards request on to the FCP SFD Comms component via an output Servicebus queue
+-
 ## Requirements
 
 ### Node.js
@@ -58,6 +67,15 @@ To run the application in `development` mode run:
 npm run dev
 ```
 
+Alternatively a start script is provided to run the application dockerised locally, which mimics the production environment more closely.
+This will build the Docker image and run the container with the appropriate environment variables.
+
+```bash
+./scripts/start
+```
+
+```bash
+
 ### Testing
 
 To test the application run:
@@ -66,13 +84,13 @@ To test the application run:
 npm run test
 ```
 
-### Production
-
-To mimic the application running in `production` mode locally run:
+OR
 
 ```bash
-npm start
+ ./scripts/test
 ```
+To run with linting and formatting checked
+
 
 ### Npm scripts
 
@@ -106,11 +124,11 @@ git config --global core.autocrlf false
 
 ## API endpoints
 
-| Endpoint             | Description                    |
-| :------------------- | :----------------------------- |
-| `GET: /health`       | Health                         |
-| `GET: /example    `  | Example API (remove as needed) |
-| `GET: /example/<id>` | Example API (remove as needed) |
+| Endpoint                | Description                                                                                                        |
+|:------------------------|:-------------------------------------------------------------------------------------------------------------------|
+| `GET: /health`          | Health                                                                                                             |
+| `POST: /api/redact/pii` | Request redaction of all PII values in database for the supplied reference                                         |
+| `GET: /api/support/comms-requests`    | Request database view of records for a given application or claim reference, for use in support area of backoffice |
 
 ## Development helpers
 
@@ -157,27 +175,6 @@ async function doStuff(server) {
 
 Helper methods are also available in `/src/helpers/mongo-lock.js`.
 
-### Proxy
-
-We are using forward-proxy which is set up by default. To make use of this: `import { fetch } from 'undici'` then
-because of the `setGlobalDispatcher(new ProxyAgent(proxyUrl))` calls will use the ProxyAgent Dispatcher
-
-If you are not using Wreck, Axios or Undici or a similar http that uses `Request`. Then you may have to provide the
-proxy dispatcher:
-
-To add the dispatcher to your own client:
-
-```javascript
-import { ProxyAgent } from 'undici'
-
-return await fetch(url, {
-  dispatcher: new ProxyAgent({
-    uri: proxyUrl,
-    keepAliveTimeout: 10,
-    keepAliveMaxTimeout: 10
-  })
-})
-```
 
 ## Docker
 
@@ -216,7 +213,7 @@ A local environment with:
 - Localstack for AWS services (SQS)
 - MongoDB
 - This service.
-  
+
 ```bash
 docker compose up --build -d
 ```
