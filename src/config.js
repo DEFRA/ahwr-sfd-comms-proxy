@@ -66,6 +66,14 @@ const config = convict({
     default: 'local',
     env: 'ENVIRONMENT'
   },
+  messageTypes: {
+    sfdRequestMessageType: {
+      doc: 'Outbound SFD message type',
+      format: String,
+      default: 'uk.gov.ffc.ahwr.submit.sfd.message.request',
+      env: 'OUTBOUND_SFD_MESSAGE_TYPE'
+    }
+  },
   sfdEmailReplyToId: {
     doc: 'Default SFD email reply to ID',
     format: String,
@@ -106,6 +114,14 @@ const config = convict({
         sensitive: true,
         env: 'MESSAGE_QUEUE_USER'
       }
+    }
+  },
+  sns: {
+    sfdCommsTopicArn: {
+      doc: 'ARN of the topic to send emails to',
+      format: String,
+      default: '#',
+      env: 'SFD_COMMS_TOPIC_ARN'
     }
   },
   sqs: {

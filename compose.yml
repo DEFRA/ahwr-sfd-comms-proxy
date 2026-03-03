@@ -64,6 +64,7 @@ services:
       MESSAGE_REQUEST_QUEUE_URL: 'http://sqs.eu-west-2.127.0.0.1:4566/000000000000/ahwr_sfd_message_queue'
       SFD_EMAIL_REPLY_TO_ID: 'c3e9149b-9490-4321-808c-72e709d9d814'
       SFD_MESSAGE_REQUEST_TOPIC: 'fcp-fd-comms-dev'
+      SFD_COMMS_TOPIC_ARN: 'arn:aws:sns:eu-west-2:332499610595:ahwr_sfd_comms_request'
       MESSAGE_QUEUE_HOST: ${MESSAGE_QUEUE_HOST}
       MESSAGE_QUEUE_PASSWORD: ${MESSAGE_QUEUE_PASSWORD}
       MESSAGE_QUEUE_USER: ${MESSAGE_QUEUE_USER}

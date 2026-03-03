@@ -5,8 +5,8 @@ import {
   createLogEntry,
   updateLogEntry
 } from '../repositories/comms-requests-repository.js'
-import { sendSfdMessageRequest } from '../messaging/fcp-messaging-service.js'
 import { outboundMessageSchema } from '../messaging/schemas/schemas.js'
+import { sendSfdMessageRequest } from '../messaging/publish-outbound-notification.js'
 
 export const sendMessageToSingleFrontDoor = async (
   logger,

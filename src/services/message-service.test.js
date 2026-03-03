@@ -8,7 +8,7 @@ import {
   updateLogEntry
 } from '../repositories/comms-requests-repository.js'
 import { config } from '../config.js'
-import { sendSfdMessageRequest } from '../messaging/fcp-messaging-service.js'
+import { sendSfdMessageRequest } from '../messaging/publish-outbound-notification.js'
 
 const now = new Date().toISOString()
 const SFD_EMAIL_REPLYTO_ID = 'c3e9149b-9490-4321-808c-72e709d9d814'
@@ -18,7 +18,7 @@ jest.mock('../repositories/comms-requests-repository.js', () => ({
   updateLogEntry: jest.fn()
 }))
 
-jest.mock('../messaging/fcp-messaging-service.js', () => ({
+jest.mock('../messaging/publish-outbound-notification', () => ({
   sendSfdMessageRequest: jest.fn()
 }))
 
