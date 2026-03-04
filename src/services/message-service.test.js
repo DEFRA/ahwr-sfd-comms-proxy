@@ -295,6 +295,35 @@ describe('buildOutboundMessage', () => {
     )
   })
 
+  test('throws error when outbound message invalid due to no crn', () => {
+    const invalidInboundMessage = {
+      sbi: 123456789,
+      agreementReference: 'IAHW-ABC1-5897',
+      claimReference: 'RESH-F99F-E09F',
+      notifyTemplateId: '123456fc-9999-40c1-a11d-85f55aff4d97',
+      emailAddress: 'an@email.com',
+      customParams: { reference: 'IAHW-ABC1-5897' },
+      dateTime: '2024-11-08T16:54:03.210Z'
+    }
+
+    expect(() => {
+      buildOutboundMessage(mockedLogger, uuidv4(), invalidInboundMessage)
+    }).toThrow('The outbound message is invalid.')
+    expect(mockedLogger.error).toHaveBeenCalledWith(
+      {
+        error: expect.any(Object),
+        event: {
+          type: 'exception',
+          category: 'fail-validation',
+          kind: 'outbound-message-validation',
+          reason:
+            '[{"message":"\\"data.crn\\" is required","path":["data","crn"],"type":"any.required","context":{"label":"data.crn","key":"crn"}}]'
+        }
+      },
+      'Message request validation error'
+    )
+  })
+
   test('verify input and output for: Farmer Claim - Complete', async () => {
     const messageId = uuidv4()
     const inputClaimOldWorld = {

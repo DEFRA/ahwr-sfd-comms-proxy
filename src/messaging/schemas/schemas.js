@@ -50,7 +50,7 @@ export const outboundMessageSchema = joi.object({
   time: joi.date(),
   data: joi
     .object({
-      crn,
+      crn: joi.required(),
       sbi,
       sourceSystem: joi
         .string()
