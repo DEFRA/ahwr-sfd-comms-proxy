@@ -11,7 +11,7 @@ const mockLogger = {
 }
 jest.mock('../common/helpers/metrics.js')
 
-describe.only('publish outbound notification', () => {
+describe('publish outbound notification', () => {
   beforeAll(() => {
     config.set(
       'sns.sfdCommsTopicArn',

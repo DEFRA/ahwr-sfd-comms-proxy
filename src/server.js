@@ -13,10 +13,6 @@ import {
   configureAndStart,
   stopSubscriber
 } from './messaging/message-request-queue-subscriber.js'
-// import {
-//   startMessagingService,
-//   stopMessagingService
-// } from './messaging/fcp-messaging-service.js'
 import { authPlugin } from './plugins/auth.js'
 
 export async function createServer() {
