@@ -70,7 +70,7 @@ const config = convict({
     sfdRequestMessageType: {
       doc: 'Outbound SFD message type',
       format: String,
-      default: 'uk.gov.ffc.ahwr.submit.sfd.message.request',
+      default: 'uk.gov.fcp.sfd.notification.request',
       env: 'OUTBOUND_SFD_MESSAGE_TYPE'
     }
   },
