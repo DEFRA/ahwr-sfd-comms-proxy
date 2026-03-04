@@ -73,6 +73,6 @@ awslocal sns list-topics
 
 echo "SNS/SQS ready"
 
-# Add an example message to the ahwr_document_request topic ready for processing from queue
-# awslocal sns publish --topic-arn arn:aws:sns:eu-west-2:000000000000:ahwr_sfd_comms_request --message '{"crn":1060000000,"sbi":987654321,"dateTime":"2024-11-11T12:01:01.001Z","customParams":{"reference":"IAHW-ABC1-1061"},"emailAddress":"defra-vets-visits-testing@equalexperts.com","notifyTemplateId":"2f9b1e0e-b678-481c-839e-892ebf42fddf","agreementReference":"IAHW-ABC1-1061"}' --message-attributes '{"messageType":{"DataType":"String","StringValue":"uk.gov.ffc.ahwr.sfd.request"},"messageId":{"DataType":"String","StringValue":"af2d61e5-ed10-4ecd-882c-35822e463e61"}}'
+# Example of how to add a message message to the ahwr_sfd_comms_request topic ready for processing from queue
+# awslocal sns publish --topic-arn arn:aws:sns:eu-west-2:000000000000:ahwr_sfd_comms_request --message '{"crn": 1234567890,"sbi": 123456789,"sourceSystem": "ffc-ahwr","notifyTemplateId": "123456fc-9999-40c1-a11d-85f55aff4d97","commsType": "email","recipient": "an@email.com","personalisation": {"reference": "IAHW-ABC1-5897"},"reference": "ffc-ahwr-af2d61e5-ed10-4ecd-882c-35822e463e61","emailReplyToId": "an@email.com"}' --message-attributes '{"messageType":{"DataType":"String","StringValue":"uk.gov.fcp.sfd.notification.request"},"messageId":{"DataType":"String","StringValue":"af2d61e5-ed10-4ecd-882c-35822e463e61"}}'
 
