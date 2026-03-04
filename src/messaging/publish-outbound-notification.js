@@ -13,7 +13,7 @@ function configureClient() {
       config.get('aws.region'),
       config.get('aws.endpointUrl'),
       getLogger(),
-      'specify-topic-when-publishing'
+      config.get('sns.sfdCommsTopicArn')
     )
     clientConfigured = true
   }
@@ -26,11 +26,7 @@ export async function sendSfdMessageRequest(logger, sdfMessageRequest) {
     eventType: sfdRequestMessageType
   }
 
-  await publishMessage(
-    sdfMessageRequest,
-    attributes,
-    config.get('sns.sfdCommsTopicArn')
-  )
+  await publishMessage(sdfMessageRequest, attributes)
 
   logger.info('Reminder event published')
   await metricsCounter('send-fcp-sfd-message-request')

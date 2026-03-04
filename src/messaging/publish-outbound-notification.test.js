@@ -42,13 +42,9 @@ describe('publish outbound notification', () => {
       await sendSfdMessageRequest(mockLogger, inputMessageBody)
 
       expect(setupClient).toHaveBeenCalledTimes(1)
-      expect(publishMessage).toHaveBeenCalledWith(
-        inputMessageBody,
-        {
-          eventType: config.get('messageTypes.sfdRequestMessageType')
-        },
-        'arn:aws:sns:eu-west-2:1:ahwr_sfd_comms_request'
-      )
+      expect(publishMessage).toHaveBeenCalledWith(inputMessageBody, {
+        eventType: config.get('messageTypes.sfdRequestMessageType')
+      })
       expect(metricsCounter).toHaveBeenCalledWith(
         'send-fcp-sfd-message-request'
       )
@@ -73,13 +69,9 @@ describe('publish outbound notification', () => {
       await sendSfdMessageRequest(mockLogger, inputMessageBody)
 
       expect(setupClient).toHaveBeenCalledTimes(0)
-      expect(publishMessage).toHaveBeenCalledWith(
-        inputMessageBody,
-        {
-          eventType: config.get('messageTypes.sfdRequestMessageType')
-        },
-        'arn:aws:sns:eu-west-2:1:ahwr_sfd_comms_request'
-      )
+      expect(publishMessage).toHaveBeenCalledWith(inputMessageBody, {
+        eventType: config.get('messageTypes.sfdRequestMessageType')
+      })
       expect(metricsCounter).toHaveBeenCalledWith(
         'send-fcp-sfd-message-request'
       )
