@@ -1,9 +1,7 @@
 import { startServer } from '../../../src/common/helpers/start-server.js'
-// import { startMessagingService } from '../../../src/messaging/fcp-messaging-service.js'
 import { configureAndStart } from '../../../src/messaging/message-request-queue-subscriber.js'
 
 jest.mock('../../../src/messaging/message-request-queue-subscriber.js')
-jest.mock('../../../src/messaging/fcp-messaging-service.js')
 
 describe('health endpoint test', () => {
   let server
