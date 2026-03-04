@@ -53,6 +53,7 @@ describe('comms requests repository', () => {
           reference: 'ffc-ahwr-4004780a-2908-4012-abc6-29a73e14c6f5',
           sourceSystem: 'ffc-ahwr',
           recipient: 'Ben.Hope@defra.gov.uk',
+          commsAddresses: 'Ben.Hope@defra.gov.uk',
           personalisation: {
             reference: 'IAHW-ABC1-1001'
           },
@@ -171,6 +172,8 @@ describe('comms requests repository', () => {
           $set: {
             'data.inboundMessage.emailAddress': 'redacted.email@example.com',
             'data.outboundMessage.data.recipient': 'redacted.email@example.com',
+            'data.outboundMessage.data.commsAddresses':
+              'redacted.email@example.com',
             updatedAt: expect.any(Date)
           }
         }
