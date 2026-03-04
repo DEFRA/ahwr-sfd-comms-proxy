@@ -51,7 +51,7 @@ describe('sendMessageToSingleFrontDoor', () => {
     jest.resetAllMocks()
   })
 
-  test('returns message with id when processing is successful', async () => {
+  test('returns message with id and crn when processing is successful', async () => {
     const outboundMessage = await sendMessageToSingleFrontDoor(
       mockedLogger,
       validInboundMessage,
@@ -60,6 +60,7 @@ describe('sendMessageToSingleFrontDoor', () => {
 
     expect(outboundMessage).not.toBeNull()
     expect(outboundMessage).toHaveProperty('id')
+    expect(outboundMessage).toHaveProperty('data.crn')
     expect(mockSetBindingsLogger).toHaveBeenCalledWith({
       messageLogCreatedWithId: expect.any(String)
     })
