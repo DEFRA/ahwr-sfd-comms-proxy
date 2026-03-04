@@ -33,14 +33,14 @@
           "commsType": "email",
           "reference": "ffc-ahwr-4004780a-2908-4012-abc6-29a73e14c6f5",
           "sourceSystem": "ffc-ahwr",
-          "commsAddresses": "Ben.Hope@defra.gov.uk",
+          "recipient": "Ben.Hope@defra.gov.uk",
           "personalisation": {
             "reference": "IAHW-ABC1-1001"
           },
           "notifyTemplateId": "2f9b1e0e-b678-481c-839e-892ebf42fddf"
         },
         "time": "2024-11-11T12:01:01.001Z",
-        "type": "uk.gov.ffc.ahwr.comms.request",
+        "type": "uk.gov.fcp.sfd.notification.request",
         "source": "ffc-ahwr",
         "specversion": "1.0.2",
         "datacontenttype": "application/json"
@@ -82,14 +82,14 @@
           "commsType": "email",
           "reference": "ffc-ahwr-aea8c91a-b5a4-4cbd-b26f-e442d3477f95",
           "sourceSystem": "ffc-ahwr",
-          "commsAddresses": "test.test@defra.gov.uk",
+          "recipient": "test.test@defra.gov.uk",
           "personalisation": {
             "reference": "IAHW-ABC1-1002"
           },
           "notifyTemplateId": "2f9b1e0e-b678-481c-839e-892ebf42fddf"
         },
         "time": "2024-11-12T10:01:01.001Z",
-        "type": "uk.gov.ffc.ahwr.comms.request",
+        "type": "uk.gov.fcp.sfd.notification.request",
         "source": "ffc-ahwr",
         "specversion": "1.0.2",
         "datacontenttype": "application/json"
@@ -137,7 +137,7 @@
           "commsType": "email",
           "reference": "ffc-ahwr-74116860-7484-4e50-be67-0eb54a2974fc",
           "sourceSystem": "ffc-ahwr",
-          "commsAddresses": "satish.chatap@capgemini.com",
+          "recipient": "satish.chatap@capgemini.com",
           "personalisation": {
             "name": "Mrs Elaine Thomason",
             "claim_uri": "https://ffc-ahwr-farmer-test.azure.defra.cloud/claim",
@@ -152,7 +152,7 @@
           "notifyTemplateId": "7d720ff7-4d1b-438c-b79d-6a34a985538f"
         },
         "time": "2024-11-18T11:20:24.777Z",
-        "type": "uk.gov.ffc.ahwr.comms.request",
+        "type": "uk.gov.fcp.sfd.notification.request",
         "source": "ffc-ahwr",
         "specversion": "1.0.2",
         "datacontenttype": "application/json"

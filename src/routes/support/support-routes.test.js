@@ -39,14 +39,14 @@ const commsRequests = [
           commsType: 'email',
           reference: 'ffc-ahwr-4004780a-2908-4012-abc6-29a73e14c6f5',
           sourceSystem: 'ffc-ahwr',
-          commsAddresses: 'Ben.Hope@defra.gov.uk',
+          recipient: 'Ben.Hope@defra.gov.uk',
           personalisation: {
             reference: 'IAHW-ABC1-1001'
           },
           notifyTemplateId: '2f9b1e0e-b678-481c-839e-892ebf42fddf'
         },
         time: '2024-11-11T12:01:01.001Z',
-        type: 'uk.gov.ffc.ahwr.comms.request',
+        type: 'uk.gov.fcp.sfd.notification.request',
         source: 'ffc-ahwr',
         specversion: '1.0.2',
         datacontenttype: 'application/json'

@@ -49,8 +49,8 @@ export const buildOutboundMessage = (logger, messageId, inboundMessage) => {
   const outboundMessage = {
     id: messageId,
     source: service,
-    specversion: '2.0.0',
-    type: 'uk.gov.ffc.ahwr.comms.request',
+    specversion: '1.0',
+    type: 'uk.gov.fcp.sfd.notification.request',
     datacontenttype: 'application/json',
     time: inboundMessage.dateTime.toString(),
     data: {
@@ -59,7 +59,7 @@ export const buildOutboundMessage = (logger, messageId, inboundMessage) => {
       sourceSystem: service,
       notifyTemplateId: inboundMessage.notifyTemplateId,
       commsType: 'email',
-      commsAddresses: inboundMessage.emailAddress,
+      recipient: inboundMessage.emailAddress,
       personalisation: inboundMessage.customParams,
       reference: `${service}-${messageId}`,
       emailReplyToId: inboundMessage.emailReplyToId ?? defaultSfdEmailReplyToId

@@ -135,7 +135,7 @@ describe('sendMessageToSingleFrontDoor', () => {
         inboundMessageQueueId: expect.any(String),
         outboundMessage: {
           data: {
-            commsAddresses: 'an@email.com',
+            recipient: 'an@email.com',
             commsType: 'email',
             crn: 1234567890,
             notifyTemplateId: '123456fc-9999-40c1-a11d-85f55aff4d99',
@@ -148,9 +148,9 @@ describe('sendMessageToSingleFrontDoor', () => {
           datacontenttype: 'application/json',
           id: expect.any(String),
           source: 'ffc-ahwr',
-          specversion: '2.0.0',
+          specversion: '1.0',
           time: now,
-          type: 'uk.gov.ffc.ahwr.comms.request'
+          type: 'uk.gov.fcp.sfd.notification.request'
         }
       },
       id: expect.any(String),
@@ -205,7 +205,7 @@ describe('sendMessageToSingleFrontDoor', () => {
         inboundMessageQueueId: expect.any(String),
         outboundMessage: {
           data: {
-            commsAddresses: 'an@email.com',
+            recipient: 'an@email.com',
             commsType: 'email',
             crn: 1234567890,
             notifyTemplateId: '123456fc-9999-40c1-a11d-85f55aff4d99',
@@ -218,9 +218,9 @@ describe('sendMessageToSingleFrontDoor', () => {
           datacontenttype: 'application/json',
           id: expect.any(String),
           source: 'ffc-ahwr',
-          specversion: '2.0.0',
+          specversion: '1.0',
           time: now,
-          type: 'uk.gov.ffc.ahwr.comms.request'
+          type: 'uk.gov.fcp.sfd.notification.request'
         }
       },
       id: expect.any(String),
@@ -339,9 +339,9 @@ describe('buildOutboundMessage', () => {
     const expectedOutput = {
       id: messageId,
       source: 'ffc-ahwr',
-      specversion: '2.0.0',
+      specversion: '1.0',
       datacontenttype: 'application/json',
-      type: 'uk.gov.ffc.ahwr.comms.request',
+      type: 'uk.gov.fcp.sfd.notification.request',
       time: '2024-11-08T16:54:03.210Z',
       data: {
         crn: 1234567890,
@@ -349,7 +349,7 @@ describe('buildOutboundMessage', () => {
         sourceSystem: 'ffc-ahwr',
         notifyTemplateId: '123456fc-9999-40c1-a11d-85f55aff4d97',
         commsType: 'email',
-        commsAddresses: 'an@email.com',
+        recipient: 'an@email.com',
         personalisation: {
           reference: 'IAHW-ABC1-5897'
         },
@@ -382,9 +382,9 @@ describe('buildOutboundMessage', () => {
     const expectedOutput = {
       id: messageId,
       source: 'ffc-ahwr',
-      specversion: '2.0.0',
+      specversion: '1.0',
       datacontenttype: 'application/json',
-      type: 'uk.gov.ffc.ahwr.comms.request',
+      type: 'uk.gov.fcp.sfd.notification.request',
       time: '2024-11-08T16:54:03.210Z',
       data: {
         crn: 1234567890,
@@ -392,7 +392,7 @@ describe('buildOutboundMessage', () => {
         sourceSystem: 'ffc-ahwr',
         notifyTemplateId: '123456fc-9999-40c1-a11d-85f55aff4d96',
         commsType: 'email',
-        commsAddresses: 'an@email.com',
+        recipient: 'an@email.com',
         personalisation: {
           reference: 'RESH-F99F-E09F',
           applicationReference: 'IAHW-ABC1-5896',
@@ -427,9 +427,9 @@ describe('buildOutboundMessage', () => {
     const expectedOutput = {
       id: messageId,
       source: 'ffc-ahwr',
-      specversion: '2.0.0',
+      specversion: '1.0',
       datacontenttype: 'application/json',
-      type: 'uk.gov.ffc.ahwr.comms.request',
+      type: 'uk.gov.fcp.sfd.notification.request',
       time: '2024-11-08T16:54:03.210Z',
       data: {
         crn: 1234567890,
@@ -437,7 +437,7 @@ describe('buildOutboundMessage', () => {
         sourceSystem: 'ffc-ahwr',
         notifyTemplateId: '123456fc-9999-40c1-a11d-85f55aff4d95',
         commsType: 'email',
-        commsAddresses: 'an@email.com',
+        recipient: 'an@email.com',
         personalisation: {
           reference: 'RESH-F99F-E09F',
           applicationReference: 'IAHW-ABC1-5895',
