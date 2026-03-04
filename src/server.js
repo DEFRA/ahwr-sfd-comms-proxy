@@ -63,13 +63,11 @@ export async function createServer() {
   ])
 
   server.events.on('start', async () => {
-    // await startMessagingService()
     await configureAndStart(server.db)
   })
 
   server.events.on('stop', async () => {
     await stopSubscriber()
-    // await stopMessagingService()
   })
 
   return server

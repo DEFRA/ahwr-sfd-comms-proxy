@@ -7,7 +7,6 @@ describe('health endpoint test', () => {
   let server
 
   beforeEach(async () => {
-    // startMessagingService.mockResolvedValueOnce()
     configureAndStart.mockResolvedValueOnce()
     server = await startServer()
   })
