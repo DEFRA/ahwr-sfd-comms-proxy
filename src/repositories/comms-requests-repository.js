@@ -68,6 +68,7 @@ export const redactPII = async (db, agreementReferences, logger) => {
     {
       $set: {
         'data.inboundMessage.emailAddress': REDACT_PII_VALUES.REDACTED_EMAIL,
+        'data.outboundMessage.data.recipient': REDACT_PII_VALUES.REDACTED_EMAIL,
         'data.outboundMessage.data.commsAddresses':
           REDACT_PII_VALUES.REDACTED_EMAIL,
         updatedAt: new Date()

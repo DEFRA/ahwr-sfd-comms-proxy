@@ -50,7 +50,7 @@ export const outboundMessageSchema = joi.object({
   time: joi.date(),
   data: joi
     .object({
-      crn,
+      crn: joi.required(),
       sbi,
       sourceSystem: joi
         .string()
@@ -60,7 +60,7 @@ export const outboundMessageSchema = joi.object({
         .required(),
       notifyTemplateId: joi.string().guid({ version: 'uuidv4' }).required(),
       commsType: joi.string().valid('email').required(),
-      commsAddresses: email.required(), // Note: array has maxItems: 10
+      recipient: email.required(),
       personalisation: joi.object().required(),
       reference: joi.string().min(1).max(100).required(),
       oneClickUnsubscribeUrl: joi.string().min(1),

@@ -8,7 +8,7 @@ import {
   updateLogEntry
 } from '../repositories/comms-requests-repository.js'
 import { config } from '../config.js'
-import { sendSfdMessageRequest } from '../messaging/fcp-messaging-service.js'
+import { sendSfdMessageRequest } from '../messaging/publish-outbound-notification.js'
 
 const now = new Date().toISOString()
 const SFD_EMAIL_REPLYTO_ID = 'c3e9149b-9490-4321-808c-72e709d9d814'
@@ -18,7 +18,7 @@ jest.mock('../repositories/comms-requests-repository.js', () => ({
   updateLogEntry: jest.fn()
 }))
 
-jest.mock('../messaging/fcp-messaging-service.js', () => ({
+jest.mock('../messaging/publish-outbound-notification', () => ({
   sendSfdMessageRequest: jest.fn()
 }))
 
@@ -51,7 +51,7 @@ describe('sendMessageToSingleFrontDoor', () => {
     jest.resetAllMocks()
   })
 
-  test('returns message with id when processing is successful', async () => {
+  test('returns message with id and crn when processing is successful', async () => {
     const outboundMessage = await sendMessageToSingleFrontDoor(
       mockedLogger,
       validInboundMessage,
@@ -60,6 +60,7 @@ describe('sendMessageToSingleFrontDoor', () => {
 
     expect(outboundMessage).not.toBeNull()
     expect(outboundMessage).toHaveProperty('id')
+    expect(outboundMessage).toHaveProperty('data.crn')
     expect(mockSetBindingsLogger).toHaveBeenCalledWith({
       messageLogCreatedWithId: expect.any(String)
     })
@@ -134,7 +135,7 @@ describe('sendMessageToSingleFrontDoor', () => {
         inboundMessageQueueId: expect.any(String),
         outboundMessage: {
           data: {
-            commsAddresses: 'an@email.com',
+            recipient: 'an@email.com',
             commsType: 'email',
             crn: 1234567890,
             notifyTemplateId: '123456fc-9999-40c1-a11d-85f55aff4d99',
@@ -147,9 +148,9 @@ describe('sendMessageToSingleFrontDoor', () => {
           datacontenttype: 'application/json',
           id: expect.any(String),
           source: 'ffc-ahwr',
-          specversion: '2.0.0',
+          specversion: '1.0',
           time: now,
-          type: 'uk.gov.ffc.ahwr.comms.request'
+          type: 'uk.gov.fcp.sfd.notification.request'
         }
       },
       id: expect.any(String),
@@ -204,7 +205,7 @@ describe('sendMessageToSingleFrontDoor', () => {
         inboundMessageQueueId: expect.any(String),
         outboundMessage: {
           data: {
-            commsAddresses: 'an@email.com',
+            recipient: 'an@email.com',
             commsType: 'email',
             crn: 1234567890,
             notifyTemplateId: '123456fc-9999-40c1-a11d-85f55aff4d99',
@@ -217,9 +218,9 @@ describe('sendMessageToSingleFrontDoor', () => {
           datacontenttype: 'application/json',
           id: expect.any(String),
           source: 'ffc-ahwr',
-          specversion: '2.0.0',
+          specversion: '1.0',
           time: now,
-          type: 'uk.gov.ffc.ahwr.comms.request'
+          type: 'uk.gov.fcp.sfd.notification.request'
         }
       },
       id: expect.any(String),
@@ -294,6 +295,35 @@ describe('buildOutboundMessage', () => {
     )
   })
 
+  test('throws error when outbound message invalid due to no crn', () => {
+    const invalidInboundMessage = {
+      sbi: 123456789,
+      agreementReference: 'IAHW-ABC1-5897',
+      claimReference: 'RESH-F99F-E09F',
+      notifyTemplateId: '123456fc-9999-40c1-a11d-85f55aff4d97',
+      emailAddress: 'an@email.com',
+      customParams: { reference: 'IAHW-ABC1-5897' },
+      dateTime: '2024-11-08T16:54:03.210Z'
+    }
+
+    expect(() => {
+      buildOutboundMessage(mockedLogger, uuidv4(), invalidInboundMessage)
+    }).toThrow('The outbound message is invalid.')
+    expect(mockedLogger.error).toHaveBeenCalledWith(
+      {
+        error: expect.any(Object),
+        event: {
+          type: 'exception',
+          category: 'fail-validation',
+          kind: 'outbound-message-validation',
+          reason:
+            '[{"message":"\\"data.crn\\" is required","path":["data","crn"],"type":"any.required","context":{"label":"data.crn","key":"crn"}}]'
+        }
+      },
+      'Message request validation error'
+    )
+  })
+
   test('verify input and output for: Farmer Claim - Complete', async () => {
     const messageId = uuidv4()
     const inputClaimOldWorld = {
@@ -309,9 +339,9 @@ describe('buildOutboundMessage', () => {
     const expectedOutput = {
       id: messageId,
       source: 'ffc-ahwr',
-      specversion: '2.0.0',
+      specversion: '1.0',
       datacontenttype: 'application/json',
-      type: 'uk.gov.ffc.ahwr.comms.request',
+      type: 'uk.gov.fcp.sfd.notification.request',
       time: '2024-11-08T16:54:03.210Z',
       data: {
         crn: 1234567890,
@@ -319,7 +349,7 @@ describe('buildOutboundMessage', () => {
         sourceSystem: 'ffc-ahwr',
         notifyTemplateId: '123456fc-9999-40c1-a11d-85f55aff4d97',
         commsType: 'email',
-        commsAddresses: 'an@email.com',
+        recipient: 'an@email.com',
         personalisation: {
           reference: 'IAHW-ABC1-5897'
         },
@@ -352,9 +382,9 @@ describe('buildOutboundMessage', () => {
     const expectedOutput = {
       id: messageId,
       source: 'ffc-ahwr',
-      specversion: '2.0.0',
+      specversion: '1.0',
       datacontenttype: 'application/json',
-      type: 'uk.gov.ffc.ahwr.comms.request',
+      type: 'uk.gov.fcp.sfd.notification.request',
       time: '2024-11-08T16:54:03.210Z',
       data: {
         crn: 1234567890,
@@ -362,7 +392,7 @@ describe('buildOutboundMessage', () => {
         sourceSystem: 'ffc-ahwr',
         notifyTemplateId: '123456fc-9999-40c1-a11d-85f55aff4d96',
         commsType: 'email',
-        commsAddresses: 'an@email.com',
+        recipient: 'an@email.com',
         personalisation: {
           reference: 'RESH-F99F-E09F',
           applicationReference: 'IAHW-ABC1-5896',
@@ -397,9 +427,9 @@ describe('buildOutboundMessage', () => {
     const expectedOutput = {
       id: messageId,
       source: 'ffc-ahwr',
-      specversion: '2.0.0',
+      specversion: '1.0',
       datacontenttype: 'application/json',
-      type: 'uk.gov.ffc.ahwr.comms.request',
+      type: 'uk.gov.fcp.sfd.notification.request',
       time: '2024-11-08T16:54:03.210Z',
       data: {
         crn: 1234567890,
@@ -407,7 +437,7 @@ describe('buildOutboundMessage', () => {
         sourceSystem: 'ffc-ahwr',
         notifyTemplateId: '123456fc-9999-40c1-a11d-85f55aff4d95',
         commsType: 'email',
-        commsAddresses: 'an@email.com',
+        recipient: 'an@email.com',
         personalisation: {
           reference: 'RESH-F99F-E09F',
           applicationReference: 'IAHW-ABC1-5895',

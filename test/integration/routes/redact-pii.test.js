@@ -4,7 +4,7 @@ import { redactPII } from '../../../src/repositories/comms-requests-repository.j
 
 jest.mock('../../../src/repositories/comms-requests-repository.js')
 jest.mock('../../../src/messaging/message-request-queue-subscriber.js')
-jest.mock('../../../src/messaging/fcp-messaging-service.js')
+jest.mock('../../../src/messaging/publish-outbound-notification.js')
 
 const mockAgreementsToRedact = [
   { reference: 'FAKE-REF-1' },

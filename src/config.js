@@ -66,46 +66,26 @@ const config = convict({
     default: 'local',
     env: 'ENVIRONMENT'
   },
+  messageTypes: {
+    sfdRequestMessageType: {
+      doc: 'Outbound SFD message type',
+      format: String,
+      default: 'uk.gov.fcp.sfd.notification.request',
+      env: 'OUTBOUND_SFD_MESSAGE_TYPE'
+    }
+  },
   sfdEmailReplyToId: {
     doc: 'Default SFD email reply to ID',
     format: String,
     default: '#',
     env: 'SFD_EMAIL_REPLY_TO_ID'
   },
-  outboundMessage: {
-    messageType: {
-      doc: 'Outbound SFD message type',
+  sns: {
+    sfdCommsTopicArn: {
+      doc: 'ARN of the topic to send emails to',
       format: String,
-      default: 'uk.gov.ffc.ahwr.submit.sfd.message.request',
-      env: 'OUTBOUND_SFD_MESSAGE_TYPE'
-    },
-    sfdMessageTopic: {
-      doc: 'Topic name to send outbound comms to',
-      format: String,
-      default: 'fcp-fd-comms-dev',
-      env: 'SFD_MESSAGE_REQUEST_TOPIC'
-    },
-    serviceBus: {
-      host: {
-        doc: 'Host name for the service bus instance',
-        format: String,
-        default: '',
-        env: 'MESSAGE_QUEUE_HOST'
-      },
-      password: {
-        doc: 'Password to connect to the service bus instance',
-        format: String,
-        default: '',
-        sensitive: true,
-        env: 'MESSAGE_QUEUE_PASSWORD'
-      },
-      username: {
-        doc: 'Username to connect to the service bus instance',
-        format: String,
-        default: '',
-        sensitive: true,
-        env: 'MESSAGE_QUEUE_USER'
-      }
+      default: '#',
+      env: 'SFD_COMMS_TOPIC_ARN'
     }
   },
   sqs: {
