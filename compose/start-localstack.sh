@@ -67,8 +67,8 @@ function create_topic_and_queue() {
 
 # Create inbound topic and queue to feed message into app
 create_topic_and_queue "ahwr_message_request" "ahwr_sfd_message_queue"
-# Create outbound SNS topic and dummy SFD comms receiver
-create_topic_and_queue "ahwr_sfd_comms_request" "ahwr_sfd_message_queue"
+# Create outbound SNS topic and queue for inspections
+create_topic_and_queue "ahwr_sfd_comms_request" "ahwr_sfd_outbound_queue"
 
 wait
 
