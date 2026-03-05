@@ -98,6 +98,10 @@ describe('sendMessageToSingleFrontDoor', () => {
     )
 
     expect(sendSfdMessageRequest).toHaveBeenCalledTimes(1)
+    expect(sendSfdMessageRequest).toHaveBeenCalledWith(
+      mockedLogger,
+      expect.any(Object)
+    )
     expect(updateLogEntry).toHaveBeenCalledTimes(1)
     expect(mockSetBindingsLogger).toHaveBeenCalledTimes(2)
   })

@@ -90,7 +90,7 @@ export const buildOutboundMessage = (logger, messageId, inboundMessage) => {
 
 const sendMessageToSfd = async (logger, outboundMessage) => {
   try {
-    await sendSfdMessageRequest(outboundMessage)
+    await sendSfdMessageRequest(logger, outboundMessage)
     return { success: true }
   } catch (error) {
     logger.error(
