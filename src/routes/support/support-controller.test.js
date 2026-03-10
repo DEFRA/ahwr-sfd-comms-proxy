@@ -256,4 +256,32 @@ describe('supportQueueMessagesHandler', () => {
 
     expect(mockH.response).toHaveBeenCalledWith([])
   })
+
+  it('rethrows Boom errors', async () => {
+    const boomError = Boom.badRequest('Invalid queue')
+    sqsClient.peekMessages.mockRejectedValue(boomError)
+
+    await expect(
+      supportQueueMessagesHandler(mockRequest, mockH)
+    ).rejects.toThrow(boomError)
+
+    expect(mockLogger.error).toHaveBeenCalledWith(
+      { error: boomError },
+      'Failed to get queue messages'
+    )
+  })
+
+  it('wraps unknown errors in Boom.internal', async () => {
+    const error = new Error('Unexpected')
+    sqsClient.peekMessages.mockRejectedValue(error)
+
+    await expect(
+      supportQueueMessagesHandler(mockRequest, mockH)
+    ).rejects.toThrow(Boom.internal(error))
+
+    expect(mockLogger.error).toHaveBeenCalledWith(
+      { error },
+      'Failed to get queue messages'
+    )
+  })
 })

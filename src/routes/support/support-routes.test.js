@@ -1,6 +1,10 @@
 import { Server } from '@hapi/hapi'
 import { supportRoutes } from './support-routes.js'
-import { getCommsRequestsHandler } from './support-controller.js'
+import {
+  getCommsRequestsHandler,
+  supportQueueMessagesHandler
+} from './support-controller.js'
+import { StatusCodes } from 'http-status-codes'
 
 jest.mock('./support-controller.js')
 
@@ -83,35 +87,52 @@ describe('support-routes', () => {
       expect(res.result).toEqual(commsRequests)
       expect(getCommsRequestsHandler).toHaveBeenCalledTimes(1)
     })
+
+    it('should validate request and call correct handler when query has claimReference', async () => {
+      getCommsRequestsHandler.mockImplementation(async (_, h) => {
+        return h.response(commsRequests).code(200)
+      })
+
+      const res = await server.inject({
+        method: 'GET',
+        url: '/api/support/comms-requests?claimReference=REPI-ABC1-XYZ1'
+      })
+
+      expect(res.statusCode).toBe(200)
+      expect(res.result).toEqual(commsRequests)
+      expect(getCommsRequestsHandler).toHaveBeenCalledTimes(1)
+    })
+
+    it('should return 400 when query is missing required params', async () => {
+      const res = await server.inject({
+        method: 'GET',
+        url: '/api/support/comms-requests'
+      })
+
+      expect(res.statusCode).toBe(400)
+      expect(res.result).toEqual({
+        error: 'Bad Request',
+        message: 'Invalid request query input',
+        statusCode: 400
+      })
+      expect(getCommsRequestsHandler).not.toHaveBeenCalled()
+    })
   })
 
-  it('should validate request and call correct handler when query has claimReference', async () => {
-    getCommsRequestsHandler.mockImplementation(async (_, h) => {
-      return h.response(commsRequests).code(200)
-    })
+  describe('GET /api/support/queue-messages', () => {
+    it('should validate request and call correct handler', async () => {
+      supportQueueMessagesHandler.mockImplementation(async (_, h) => {
+        return h.response().code(StatusCodes.OK)
+      })
 
-    const res = await server.inject({
-      method: 'GET',
-      url: '/api/support/comms-requests?claimReference=REPI-ABC1-XYZ1'
-    })
+      const res = await server.inject({
+        method: 'GET',
+        url: '/api/support/queue-messages?queueUrl=localhost:4566/queue-url',
+        headers: { 'x-api-key': 'not-set' }
+      })
 
-    expect(res.statusCode).toBe(200)
-    expect(res.result).toEqual(commsRequests)
-    expect(getCommsRequestsHandler).toHaveBeenCalledTimes(1)
-  })
-
-  it('should return 400 when query is missing required params', async () => {
-    const res = await server.inject({
-      method: 'GET',
-      url: '/api/support/comms-requests'
+      expect(res.statusCode).toBe(StatusCodes.OK)
+      expect(supportQueueMessagesHandler).toHaveBeenCalledTimes(1)
     })
-
-    expect(res.statusCode).toBe(400)
-    expect(res.result).toEqual({
-      error: 'Bad Request',
-      message: 'Invalid request query input',
-      statusCode: 400
-    })
-    expect(getCommsRequestsHandler).not.toHaveBeenCalled()
   })
 })
