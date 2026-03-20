@@ -9,6 +9,7 @@ import {
 import { ObjectId } from 'mongodb'
 import Boom from '@hapi/boom'
 import { sqsClient } from 'ffc-ahwr-common-library'
+import { QueueDoesNotExist } from '@aws-sdk/client-sqs'
 
 jest.mock('../../repositories/comms-requests-repository.js')
 jest.mock('ffc-ahwr-common-library')
@@ -282,6 +283,20 @@ describe('supportQueueMessagesHandler', () => {
     expect(mockLogger.error).toHaveBeenCalledWith(
       { error },
       'Failed to get queue messages'
+    )
+  })
+
+  it('returns 404 when queue does not exist', async () => {
+    const error = new QueueDoesNotExist({
+      message: 'The specified queue does not exist.',
+      $metadata: {}
+    })
+    sqsClient.peekMessages.mockRejectedValue(error)
+
+    await expect(
+      supportQueueMessagesHandler(mockRequest, mockH)
+    ).rejects.toThrow(
+      Boom.notFound('Queue not found: http://localhost:45666/queueName')
     )
   })
 })

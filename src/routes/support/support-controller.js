@@ -6,6 +6,7 @@ import {
 } from '../../repositories/comms-requests-repository.js'
 import { sqsClient } from 'ffc-ahwr-common-library'
 import { config } from '../../config.js'
+import { QueueDoesNotExist } from '@aws-sdk/client-sqs'
 
 export const getCommsRequestsHandler = async (request, h) => {
   try {
@@ -35,9 +36,9 @@ export const getCommsRequestsHandler = async (request, h) => {
 }
 
 export const supportQueueMessagesHandler = async (request, h) => {
-  try {
-    const { queueUrl, limit } = request.query
+  const { queueUrl, limit } = request.query
 
+  try {
     const region = config.get('aws.region')
     const endpointUrl = config.get('aws.endpointUrl')
 
@@ -48,6 +49,10 @@ export const supportQueueMessagesHandler = async (request, h) => {
     return h.response(messages).code(StatusCodes.OK)
   } catch (error) {
     request.logger.error({ error }, 'Failed to get queue messages')
+
+    if (error instanceof QueueDoesNotExist) {
+      throw Boom.notFound(`Queue not found: ${queueUrl}`)
+    }
 
     if (Boom.isBoom(error)) {
       throw error
