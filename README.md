@@ -27,15 +27,22 @@ Created from the Core delivery platform Node.js Backend Template.
   - [About the licence](#about-the-licence)
 
 # Service Purpose
+
 This service is responsible for proxying requests to the SFD Comms component, which is used to send emails via gov.notify.
 It is invoked by input messages on it's input SQS queue, and outputs requests to the FCP SFD Comms component via an output Servicebus queue.
 
 ## Service features
+
 - Listens to an SQS queue for messages containing email request details
 - Saves an audit to the database of the request
 - Forwards request on to the FCP SFD Comms component via an output Servicebus queue
 -
+
 ## Requirements
+
+### pre-commit
+
+Please install [pre-commit](https://pre-commit.com/), as it is used to scan commits for secrets using [Gitleaks](https://github.com/gitleaks/gitleaks).
 
 ### Node.js
 
@@ -74,7 +81,7 @@ This will build the Docker image and run the container with the appropriate envi
 ./scripts/start
 ```
 
-```bash
+````bash
 
 ### Testing
 
@@ -82,15 +89,15 @@ To test the application run:
 
 ```bash
 npm run test
-```
+````
 
 OR
 
 ```bash
  ./scripts/test
 ```
-To run with linting and formatting checked
 
+To run with linting and formatting checked
 
 ### Npm scripts
 
@@ -124,11 +131,11 @@ git config --global core.autocrlf false
 
 ## API endpoints
 
-| Endpoint                | Description                                                                                                        |
-|:------------------------|:-------------------------------------------------------------------------------------------------------------------|
-| `GET: /health`          | Health                                                                                                             |
-| `POST: /api/redact/pii` | Request redaction of all PII values in database for the supplied reference                                         |
-| `GET: /api/support/comms-requests`    | Request database view of records for a given application or claim reference, for use in support area of backoffice |
+| Endpoint                           | Description                                                                                                        |
+| :--------------------------------- | :----------------------------------------------------------------------------------------------------------------- |
+| `GET: /health`                     | Health                                                                                                             |
+| `POST: /api/redact/pii`            | Request redaction of all PII values in database for the supplied reference                                         |
+| `GET: /api/support/comms-requests` | Request database view of records for a given application or claim reference, for use in support area of backoffice |
 
 ## Development helpers
 
@@ -174,7 +181,6 @@ async function doStuff(server) {
 ```
 
 Helper methods are also available in `/src/helpers/mongo-lock.js`.
-
 
 ## Docker
 
