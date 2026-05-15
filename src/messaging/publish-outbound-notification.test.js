@@ -45,6 +45,9 @@ describe('publish outbound notification', () => {
       expect(publishMessage).toHaveBeenCalledWith(inputMessageBody, {
         eventType: config.get('messageTypes.sfdRequestMessageType')
       })
+      expect(mockLogger.info).toHaveBeenCalledWith(
+        'SFD message request published'
+      )
       expect(metricsCounter).toHaveBeenCalledWith(
         'send-fcp-sfd-message-request'
       )

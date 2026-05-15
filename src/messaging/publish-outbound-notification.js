@@ -28,6 +28,6 @@ export async function sendSfdMessageRequest(logger, sdfMessageRequest) {
 
   await publishMessage(sdfMessageRequest, attributes)
 
-  logger.info('Reminder event published')
+  logger.info('SFD message request published')
   await metricsCounter('send-fcp-sfd-message-request')
 }

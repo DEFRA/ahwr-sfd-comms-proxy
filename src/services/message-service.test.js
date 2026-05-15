@@ -31,6 +31,7 @@ const mockDb = {
 const mockSetBindingsLogger = jest.fn()
 const mockedLogger = {
   setBindings: mockSetBindingsLogger,
+  info: jest.fn(),
   error: jest.fn()
 }
 
@@ -237,6 +238,118 @@ describe('sendMessageToSingleFrontDoor', () => {
       expect.any(String),
       'REQUESTED'
     )
+  })
+})
+
+describe('sendMessageToSingleFrontDoor — instrumentation', () => {
+  config.set('sfdEmailReplyToId', SFD_EMAIL_REPLYTO_ID)
+
+  const validInboundMessage = {
+    crn: 1234567890,
+    sbi: 123456789,
+    agreementReference: 'IAHW-ABC1-5899',
+    claimReference: 'RESH-F99F-E09F',
+    notifyTemplateId: '123456fc-9999-40c1-a11d-85f55aff4d99',
+    emailAddress: 'an@email.com',
+    customParams: {},
+    dateTime: now
+  }
+
+  beforeEach(() => {
+    jest.resetAllMocks()
+  })
+
+  test('emits one info line with per-step timings on success', async () => {
+    await sendMessageToSingleFrontDoor(
+      mockedLogger,
+      validInboundMessage,
+      'message-id',
+      mockDb
+    )
+
+    expect(mockedLogger.info).toHaveBeenCalledTimes(1)
+    expect(mockedLogger.info).toHaveBeenCalledWith(
+      {
+        event: {
+          action: 'sfd.send-message',
+          category: 'process',
+          kind: 'metric',
+          outcome: 'success',
+          duration: expect.any(Number)
+        },
+        insertMs: expect.any(Number),
+        snsMs: expect.any(Number),
+        updateMs: expect.any(Number)
+      },
+      'SFD message processed'
+    )
+  })
+
+  test('emits timing line with outcome=failure when SFD publish fails', async () => {
+    sendSfdMessageRequest.mockImplementationOnce(() => {
+      throw new Error('boom')
+    })
+
+    await expect(
+      sendMessageToSingleFrontDoor(
+        mockedLogger,
+        validInboundMessage,
+        'message-id',
+        mockDb
+      )
+    ).rejects.toThrow('Failed to send outbound message to SFD')
+
+    expect(mockedLogger.info).toHaveBeenCalledTimes(1)
+    const [payload, message] = mockedLogger.info.mock.calls[0]
+    expect(message).toBe('SFD message processed')
+    expect(payload.event.outcome).toBe('failure')
+    expect(payload.insertMs).toEqual(expect.any(Number))
+    expect(payload.snsMs).toEqual(expect.any(Number))
+    expect(payload.updateMs).toEqual(expect.any(Number))
+  })
+
+  test('emits timing line with insertMs only when storeMessage fails', async () => {
+    createLogEntry.mockImplementationOnce(() => {
+      throw new Error('mongo down')
+    })
+
+    await expect(
+      sendMessageToSingleFrontDoor(
+        mockedLogger,
+        validInboundMessage,
+        'message-id',
+        mockDb
+      )
+    ).rejects.toThrow('Failed to save message log.')
+
+    expect(mockedLogger.info).toHaveBeenCalledTimes(1)
+    const [payload] = mockedLogger.info.mock.calls[0]
+    expect(payload.event.outcome).toBe('failure')
+    expect(payload.insertMs).toBeNull()
+    expect(payload.snsMs).toBeNull()
+    expect(payload.updateMs).toBeNull()
+  })
+
+  test('emits timing line with insertMs and snsMs when updateMessageLog fails', async () => {
+    updateLogEntry.mockImplementationOnce(() => {
+      throw new Error('mongo down')
+    })
+
+    await expect(
+      sendMessageToSingleFrontDoor(
+        mockedLogger,
+        validInboundMessage,
+        'message-id',
+        mockDb
+      )
+    ).rejects.toThrow('Failed to update message log.')
+
+    expect(mockedLogger.info).toHaveBeenCalledTimes(1)
+    const [payload] = mockedLogger.info.mock.calls[0]
+    expect(payload.event.outcome).toBe('failure')
+    expect(payload.insertMs).toEqual(expect.any(Number))
+    expect(payload.snsMs).toEqual(expect.any(Number))
+    expect(payload.updateMs).toBeNull()
   })
 })
 
