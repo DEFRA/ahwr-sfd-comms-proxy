@@ -210,7 +210,7 @@ describe('comms requests repository', () => {
       expect(mockDb.collection).toHaveBeenCalledWith('commsrequests')
       expect(mockCollection.createIndex).toHaveBeenCalledWith(
         { id: 1 },
-        { unique: true }
+        { unique: true, sparse: true }
       )
       expect(mockCollection.createIndex).toHaveBeenCalledWith({
         agreementReference: 1
