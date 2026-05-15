@@ -3,6 +3,7 @@ import { REDACT_PII_VALUES } from 'ffc-ahwr-common-library'
 const COLLECTION = 'commsrequests'
 
 export const createSfdProxyIndexes = async (db) => {
+  await db.collection(COLLECTION).createIndex({ id: 1 }, { unique: true })
   await db.collection(COLLECTION).createIndex({ agreementReference: 1 })
   await db.collection(COLLECTION).createIndex({ claimReference: 1 })
 }

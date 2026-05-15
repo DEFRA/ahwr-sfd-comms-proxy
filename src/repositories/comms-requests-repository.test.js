@@ -208,6 +208,10 @@ describe('comms requests repository', () => {
       await createSfdProxyIndexes(mockDb)
 
       expect(mockDb.collection).toHaveBeenCalledWith('commsrequests')
+      expect(mockCollection.createIndex).toHaveBeenCalledWith(
+        { id: 1 },
+        { unique: true }
+      )
       expect(mockCollection.createIndex).toHaveBeenCalledWith({
         agreementReference: 1
       })
