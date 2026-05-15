@@ -23,24 +23,60 @@ export const sendMessageToSingleFrontDoor = async (
     inboundMessage
   )
 
-  await storeMessage(
-    logger,
-    inboundMessageQueueId,
-    inboundMessage,
-    outboundMessage,
-    db
-  )
+  const startNs = process.hrtime.bigint()
+  let insertNs
+  let snsNs
+  let updateNs
+  let outcome = 'success'
 
-  const { success } = await sendMessageToSfd(logger, outboundMessage)
+  try {
+    const t0 = process.hrtime.bigint()
+    await storeMessage(
+      logger,
+      inboundMessageQueueId,
+      inboundMessage,
+      outboundMessage,
+      db
+    )
+    insertNs = process.hrtime.bigint() - t0
 
-  await updateMessageLog(db, outboundMessageId, success)
+    const t1 = process.hrtime.bigint()
+    const { success } = await sendMessageToSfd(logger, outboundMessage)
+    snsNs = process.hrtime.bigint() - t1
 
-  if (!success) {
-    throw new Error('Failed to send outbound message to SFD')
+    const t2 = process.hrtime.bigint()
+    await updateMessageLog(db, outboundMessageId, success)
+    updateNs = process.hrtime.bigint() - t2
+
+    if (!success) {
+      throw new Error('Failed to send outbound message to SFD')
+    }
+
+    return outboundMessage
+  } catch (err) {
+    outcome = 'failure'
+    throw err
+  } finally {
+    logger.info(
+      {
+        event: {
+          action: 'sfd.send-message',
+          category: 'process',
+          kind: 'metric',
+          outcome,
+          duration: Number(process.hrtime.bigint() - startNs)
+        },
+        insertMs: nsToMs(insertNs),
+        snsMs: nsToMs(snsNs),
+        updateMs: nsToMs(updateNs)
+      },
+      'SFD message processed'
+    )
   }
-
-  return outboundMessage
 }
+
+const NS_PER_MS = 1_000_000
+const nsToMs = (ns) => (ns === undefined ? null : Number(ns) / NS_PER_MS)
 
 export const buildOutboundMessage = (logger, messageId, inboundMessage) => {
   const service = SOURCE_SYSTEM
