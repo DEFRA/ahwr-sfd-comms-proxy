@@ -2,13 +2,16 @@
 
 Created from the Core delivery platform Node.js Backend Template.
 
+- [Service Purpose](#service-purpose)
+  - [Service features](#service-features)
+  - [Architecture](#architecture)
 - [Requirements](#requirements)
+  - [pre-commit](#pre-commit)
   - [Node.js](#nodejs)
 - [Local development](#local-development)
   - [Setup](#setup)
   - [Development](#development)
   - [Testing](#testing)
-  - [Production](#production)
   - [Npm scripts](#npm-scripts)
   - [Update dependencies](#update-dependencies)
   - [Formatting](#formatting)
@@ -16,7 +19,6 @@ Created from the Core delivery platform Node.js Backend Template.
 - [API endpoints](#api-endpoints)
 - [Development helpers](#development-helpers)
   - [MongoDB Locks](#mongodb-locks)
-  - [Proxy](#proxy)
 - [Docker](#docker)
   - [Development image](#development-image)
   - [Production image](#production-image)
