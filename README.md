@@ -2,13 +2,16 @@
 
 Created from the Core delivery platform Node.js Backend Template.
 
+- [Service Purpose](#service-purpose)
+  - [Service features](#service-features)
+  - [Architecture](#architecture)
 - [Requirements](#requirements)
+  - [pre-commit](#pre-commit)
   - [Node.js](#nodejs)
 - [Local development](#local-development)
   - [Setup](#setup)
   - [Development](#development)
   - [Testing](#testing)
-  - [Production](#production)
   - [Npm scripts](#npm-scripts)
   - [Update dependencies](#update-dependencies)
   - [Formatting](#formatting)
@@ -16,7 +19,6 @@ Created from the Core delivery platform Node.js Backend Template.
 - [API endpoints](#api-endpoints)
 - [Development helpers](#development-helpers)
   - [MongoDB Locks](#mongodb-locks)
-  - [Proxy](#proxy)
 - [Docker](#docker)
   - [Development image](#development-image)
   - [Production image](#production-image)
@@ -36,7 +38,27 @@ It is invoked by input messages on it's input SQS queue, and outputs requests to
 - Listens to an SQS queue for messages containing email request details
 - Saves an audit to the database of the request
 - Forwards request on to the FCP SFD Comms component via an output Servicebus queue
--
+
+## Architecture
+
+```mermaid
+  architecture-beta
+      group cdp(cloud)[CDP]
+
+      service message(internet)[Message Generator Service] in cdp
+      service sfd(internet)[SFD Platform]
+
+      service sqs(server)[SQS Request Queue] in cdp
+      service proxy(server)[SFD Comms Proxy] in cdp
+      service mongo(database)[MongoDB] in cdp
+      service sns(server)[SNS SFD Comms Topic] in cdp
+
+      message:R --> L:sqs
+      sqs:R --> L:proxy
+      proxy:R --> L:sns
+      proxy:B --> T:mongo
+      sns:R --> L:sfd
+```
 
 ## Requirements
 
