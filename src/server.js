@@ -8,7 +8,6 @@ import { requestLogger } from './common/helpers/logging/request-logger.js'
 import { mongoDb } from './common/helpers/mongodb.js'
 import { pulse } from './common/helpers/pulse.js'
 import { requestTracing } from './common/helpers/request-tracing.js'
-import { setupProxy } from './common/helpers/proxy/setup-proxy.js'
 import {
   configureAndStart,
   stopSubscriber
@@ -16,7 +15,6 @@ import {
 import { authPlugin } from './plugins/auth.js'
 
 export async function createServer() {
-  setupProxy()
   const server = Hapi.server({
     host: config.get('host'),
     port: config.get('port'),
