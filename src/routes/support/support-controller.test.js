@@ -106,7 +106,7 @@ describe('getCommsRequestsHandler', () => {
       new Error('Failed to retrieve comms requests by claim reference')
     )
 
-    expect(
+    await expect(
       getCommsRequestsHandler(
         { ...request, query: { claimReference: 'REBC-J9AR-KILQ' } },
         mockH
@@ -119,7 +119,7 @@ describe('getCommsRequestsHandler', () => {
       new Error('Failed to retrieve comms requests by agreement reference')
     )
 
-    expect(
+    await expect(
       getCommsRequestsHandler(
         { ...request, query: { agreementReference: 'IAHW-ABC1-1061' } },
         mockH
@@ -134,7 +134,7 @@ describe('getCommsRequestsHandler', () => {
       Boom.badRequest('Failed to retrieve comms requests by claim reference')
     )
 
-    expect(
+    await expect(
       getCommsRequestsHandler(
         { ...request, query: { claimReference: 'REBC-J9AR-KILQ' } },
         mockH
@@ -149,7 +149,7 @@ describe('getCommsRequestsHandler', () => {
       )
     )
 
-    expect(
+    await expect(
       getCommsRequestsHandler(
         { ...request, query: { agreementReference: 'IAHW-ABC1-1061' } },
         mockH
