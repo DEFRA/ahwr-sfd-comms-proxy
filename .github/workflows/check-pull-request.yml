@@ -27,19 +27,21 @@ jobs:
 
       - name: Upgrade npm
         run: npm install -g npm@11.10.0
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Scan security vulnerabilities
         run: npm audit --audit-level=high --omit dev
 
-      - name: Test code and Create Test Coverage Reports
+      - name: Lint code
         run: |
           npm run format:check
           npm run lint
-          npm test
-          npm run lint:deps
+          npm run lint:knip
+
+      - name: Test code and Create Test Coverage Reports
+        run: npm test
 
       - name: Test Docker Image Build
         run: |
