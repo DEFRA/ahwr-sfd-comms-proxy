@@ -62,7 +62,7 @@
     "eslint": "9.39.3",
     "husky": "9.1.7",
     "jest": "30.4.2",
-    "jest-junit": "13.0.0",
+    "jest-junit": "17.0.0",
     "knip": "6.29.0",
     "mongodb-memory-server": "10.4.3",
     "nano-staged": "1.0.2",
