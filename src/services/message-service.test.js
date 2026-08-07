@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'node:crypto'
 import {
   sendMessageToSingleFrontDoor,
   buildOutboundMessage
@@ -365,7 +365,7 @@ describe('buildOutboundMessage', () => {
     }
 
     expect(() => {
-      buildOutboundMessage(mockedLogger, uuidv4(), invalidInboundMessage)
+      buildOutboundMessage(mockedLogger, randomUUID(), invalidInboundMessage)
     }).toThrow('The outbound message is invalid.')
     expect(mockedLogger.error).toHaveBeenCalledWith(
       {
@@ -395,7 +395,7 @@ describe('buildOutboundMessage', () => {
     }
 
     expect(() => {
-      buildOutboundMessage(mockedLogger, uuidv4(), validInboundMessage)
+      buildOutboundMessage(mockedLogger, randomUUID(), validInboundMessage)
     }).toThrow('The outbound message is invalid.')
     expect(mockedLogger.error).toHaveBeenCalledWith(
       {
@@ -424,7 +424,7 @@ describe('buildOutboundMessage', () => {
     }
 
     expect(() => {
-      buildOutboundMessage(mockedLogger, uuidv4(), invalidInboundMessage)
+      buildOutboundMessage(mockedLogger, randomUUID(), invalidInboundMessage)
     }).toThrow('The outbound message is invalid.')
     expect(mockedLogger.error).toHaveBeenCalledWith(
       {
@@ -442,7 +442,7 @@ describe('buildOutboundMessage', () => {
   })
 
   test('verify input and output for: Farmer Claim - Complete', async () => {
-    const messageId = uuidv4()
+    const messageId = randomUUID()
     const inputClaimOldWorld = {
       crn: 1234567890,
       sbi: 123456789,
@@ -481,7 +481,7 @@ describe('buildOutboundMessage', () => {
   })
 
   test('verify input and output for: Farmer Claim - Endemics Follow-up', async () => {
-    const messageId = uuidv4()
+    const messageId = randomUUID()
     const inputClaimEndemicFollowup = {
       crn: 1234567890,
       sbi: 123456789,
@@ -526,7 +526,7 @@ describe('buildOutboundMessage', () => {
   })
 
   test('verify input and output for: Farmer Claim - Endemics Review', async () => {
-    const messageId = uuidv4()
+    const messageId = randomUUID()
     const inputClaimEndemicFollowup = {
       crn: 1234567890,
       sbi: 123456789,
@@ -571,7 +571,7 @@ describe('buildOutboundMessage', () => {
   })
 
   test('verify input and output with optional replyToId', async () => {
-    const messageId = uuidv4()
+    const messageId = randomUUID()
     const inputClaimEndemicFollowup = {
       crn: 1234567890,
       sbi: 123456789,
