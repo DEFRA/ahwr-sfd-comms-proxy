@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid'
+import { randomUUID } from 'node:crypto'
 import { MESSAGE_RESULT_MAP, SOURCE_SYSTEM } from '../constants/index.js'
 import { config } from '../config.js'
 import {
@@ -15,7 +15,7 @@ export const sendMessageToSingleFrontDoor = async (
   db
 ) => {
   const inboundMessageQueueId = messageId
-  const outboundMessageId = uuidv4()
+  const outboundMessageId = randomUUID()
   logger.setBindings({ outboundMessageId })
   const outboundMessage = buildOutboundMessage(
     logger,
