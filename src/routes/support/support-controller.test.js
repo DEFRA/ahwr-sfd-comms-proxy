@@ -1,6 +1,8 @@
 import {
   getCommsRequestsHandler,
-  supportQueueMessagesHandler
+  supportQueueMessagesHandler,
+  supportIsDeadLetterQueueHandler,
+  supportApplyQueueActionsHandler
 } from './support-controller.js'
 import {
   getLogEntryByClaimRef,
@@ -297,6 +299,129 @@ describe('supportQueueMessagesHandler', () => {
       supportQueueMessagesHandler(mockRequest, mockH)
     ).rejects.toThrow(
       Boom.notFound('Queue not found: http://localhost:45666/queueName')
+    )
+  })
+})
+
+describe('supportIsDeadLetterQueueHandler', () => {
+  const mockLogger = { info: jest.fn(), error: jest.fn() }
+  const mockRequest = {
+    logger: mockLogger,
+    query: { queueUrl: 'http://localhost:45666/queueName-dlq' }
+  }
+  const mockH = {
+    response: jest.fn().mockReturnThis(),
+    code: jest.fn().mockReturnThis()
+  }
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('returns the dead-letter flag', async () => {
+    sqsClient.isDeadLetterQueue.mockResolvedValue(true)
+
+    await supportIsDeadLetterQueueHandler(mockRequest, mockH)
+
+    expect(sqsClient.setupClient).toHaveBeenCalledWith(
+      'eu-west-2',
+      'http://localhost:4566',
+      mockLogger
+    )
+    expect(sqsClient.isDeadLetterQueue).toHaveBeenCalledWith(
+      'http://localhost:45666/queueName-dlq'
+    )
+    expect(mockH.response).toHaveBeenCalledWith({ isDlq: true })
+  })
+
+  it('returns 404 when queue does not exist', async () => {
+    sqsClient.isDeadLetterQueue.mockRejectedValue(
+      new QueueDoesNotExist({
+        message: 'The specified queue does not exist.',
+        $metadata: {}
+      })
+    )
+
+    await expect(
+      supportIsDeadLetterQueueHandler(mockRequest, mockH)
+    ).rejects.toThrow(
+      Boom.notFound('Queue not found: http://localhost:45666/queueName-dlq')
+    )
+  })
+
+  it('wraps unknown errors in Boom.internal', async () => {
+    const error = new Error('Unexpected')
+    sqsClient.isDeadLetterQueue.mockRejectedValue(error)
+
+    await expect(
+      supportIsDeadLetterQueueHandler(mockRequest, mockH)
+    ).rejects.toThrow(Boom.internal(error))
+  })
+})
+
+describe('supportApplyQueueActionsHandler', () => {
+  const mockLogger = { info: jest.fn(), error: jest.fn() }
+  const mockRequest = {
+    logger: mockLogger,
+    payload: {
+      queueUrl: 'http://localhost:45666/queueName-dlq',
+      actions: [
+        { id: '1', action: 'delete' },
+        { id: '2', action: 'reapply' }
+      ]
+    }
+  }
+  const mockH = {
+    response: jest.fn().mockReturnThis(),
+    code: jest.fn().mockReturnThis()
+  }
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('applies the actions on a dead-letter queue', async () => {
+    sqsClient.isDeadLetterQueue.mockResolvedValue(true)
+    sqsClient.applyDlqActions.mockResolvedValue([
+      { id: '1', action: 'delete', status: 'done' }
+    ])
+
+    await supportApplyQueueActionsHandler(mockRequest, mockH)
+
+    expect(sqsClient.applyDlqActions).toHaveBeenCalledWith(
+      'http://localhost:45666/queueName-dlq',
+      { 1: 'delete', 2: 'reapply' }
+    )
+    expect(mockH.response).toHaveBeenCalledWith([
+      { id: '1', action: 'delete', status: 'done' }
+    ])
+  })
+
+  it('returns 400 when the queue is not a dead-letter queue', async () => {
+    sqsClient.isDeadLetterQueue.mockResolvedValue(false)
+
+    await expect(
+      supportApplyQueueActionsHandler(mockRequest, mockH)
+    ).rejects.toThrow(
+      Boom.badRequest(
+        'Not a dead-letter queue: http://localhost:45666/queueName-dlq'
+      )
+    )
+    expect(sqsClient.applyDlqActions).not.toHaveBeenCalled()
+  })
+
+  it('returns 404 when queue does not exist', async () => {
+    sqsClient.isDeadLetterQueue.mockRejectedValue(
+      new QueueDoesNotExist({
+        message: 'The specified queue does not exist.',
+        $metadata: {}
+      })
+    )
+
+    await expect(
+      supportApplyQueueActionsHandler(mockRequest, mockH)
+    ).rejects.toThrow(
+      Boom.notFound('Queue not found: http://localhost:45666/queueName-dlq')
     )
   })
 })
