@@ -2,7 +2,9 @@ import { Server } from '@hapi/hapi'
 import { supportRoutes } from './support-routes.js'
 import {
   getCommsRequestsHandler,
-  supportQueueMessagesHandler
+  supportQueueMessagesHandler,
+  supportIsDeadLetterQueueHandler,
+  supportApplyQueueActionsHandler
 } from './support-controller.js'
 import { StatusCodes } from 'http-status-codes'
 
@@ -133,6 +135,66 @@ describe('support-routes', () => {
 
       expect(res.statusCode).toBe(StatusCodes.OK)
       expect(supportQueueMessagesHandler).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('GET /api/support/queue-messages/is-dlq', () => {
+    it('should validate request and call correct handler', async () => {
+      supportIsDeadLetterQueueHandler.mockImplementation(async (_, h) => {
+        return h.response({ isDlq: true }).code(StatusCodes.OK)
+      })
+
+      const res = await server.inject({
+        method: 'GET',
+        url: '/api/support/queue-messages/is-dlq?queueUrl=localhost:4566/queue-url-dlq'
+      })
+
+      expect(res.statusCode).toBe(StatusCodes.OK)
+      expect(supportIsDeadLetterQueueHandler).toHaveBeenCalledTimes(1)
+    })
+
+    it('should return 400 when queueUrl is missing', async () => {
+      const res = await server.inject({
+        method: 'GET',
+        url: '/api/support/queue-messages/is-dlq'
+      })
+
+      expect(res.statusCode).toBe(400)
+      expect(supportIsDeadLetterQueueHandler).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('POST /api/support/queue-messages/actions', () => {
+    it('should validate request and call correct handler', async () => {
+      supportApplyQueueActionsHandler.mockImplementation(async (_, h) => {
+        return h.response([]).code(StatusCodes.OK)
+      })
+
+      const res = await server.inject({
+        method: 'POST',
+        url: '/api/support/queue-messages/actions',
+        payload: {
+          queueUrl: 'localhost:4566/queue-url-dlq',
+          actions: [{ id: '1', action: 'delete' }]
+        }
+      })
+
+      expect(res.statusCode).toBe(StatusCodes.OK)
+      expect(supportApplyQueueActionsHandler).toHaveBeenCalledTimes(1)
+    })
+
+    it('should return 400 when an action is not valid', async () => {
+      const res = await server.inject({
+        method: 'POST',
+        url: '/api/support/queue-messages/actions',
+        payload: {
+          queueUrl: 'localhost:4566/queue-url-dlq',
+          actions: [{ id: '1', action: 'explode' }]
+        }
+      })
+
+      expect(res.statusCode).toBe(400)
+      expect(supportApplyQueueActionsHandler).not.toHaveBeenCalled()
     })
   })
 })
