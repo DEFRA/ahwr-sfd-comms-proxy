@@ -12,7 +12,7 @@ export const mongoDb = {
       const client = await MongoClient.connect(options.mongoUrl, {
         ...options.mongoOptions,
         runtimeAdapters: {
-          os: os
+          os
         }
       })
 
